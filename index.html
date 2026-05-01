@@ -114,7 +114,6 @@
                 <i class="ph-bold ph-sign-out text-2xl"></i> تسجيل الخروج
             </a>
             <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
-            <!-- تقليل انحناء أيقونة المستخدم لتصبح رسمية أكثر -->
             <div class="flex items-center gap-2 bg-white/60 px-3 py-1.5 rounded-lg shadow-sm border border-white/50">
                 <div class="w-7 h-7 bg-brand-blue rounded-full flex items-center justify-center text-white">
                     <i class="ph-fill ph-user text-sm"></i>
@@ -145,7 +144,7 @@
             <h2 class="text-lg font-black text-center mb-3 text-[#A05E2C]">عروض خاصة 🔥</h2>
 
             <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3">
-                <!-- عرض 1 المدمج -->
+                <!-- عرض 1 -->
                 <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=200&q=80" alt="حليب" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
@@ -165,7 +164,7 @@
                     </button>
                 </div>
 
-                <!-- عرض 2 المدمج -->
+                <!-- عرض 2 -->
                 <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=200&q=80" alt="خبز" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
@@ -190,49 +189,69 @@
         <section class="w-[66%] bg-brand-panel rounded-xl p-5 flex flex-col relative shadow-inner">
             
             <!-- حاوية الخريطة -->
-            <div class="flex-1 w-full relative bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-5">
+            <div class="flex-1 w-full bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-4">
                 
-                <!-- رسم الأرفف (Aisles) -->
-                <div class="w-full h-full flex flex-col justify-between">
-                    <!-- الصف العلوي -->
-                    <div class="flex justify-between h-[40%]">
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);">23</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">22</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">21</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">20</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);">19</div>
-                    </div>
+                <!-- حاوية مشتركة (Relative) لدمج الـ HTML والـ SVG بدقة متناهية -->
+                <div class="relative w-full h-full">
                     
-                    <!-- مساحة الممر الأوسط -->
-                    <div class="h-[20%] relative w-full flex items-center justify-center">
-                        <hr class="absolute w-full border-gray-400 border-dashed z-0 opacity-40 border-[2px]">
+                    <!-- رسم الأرفف والممرات هندسياً لتفادي التقاطع -->
+                    <div class="w-full h-full flex flex-col">
+                        <!-- ممر علوي (12%) للمشي -->
+                        <div class="h-[12%] w-full"></div>
+
+                        <!-- الصف العلوي (28%) مستطيلات مثالية ورسمية -->
+                        <div class="flex justify-between h-[28%] w-full">
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">23</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">22</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">21</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">20</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">19</div>
+                        </div>
+                        
+                        <!-- ممر أوسط (20%) للمشي -->
+                        <div class="h-[20%] relative w-full flex items-center justify-center">
+                            <hr class="absolute w-full border-gray-400 border-dashed z-0 opacity-40 border-[2px]">
+                        </div>
+
+                        <!-- الصف السفلي (28%) مستطيلات مثالية ورسمية -->
+                        <div class="flex justify-between h-[28%] w-full">
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">13</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">12</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">11</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">10</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">9</div>
+                        </div>
+
+                        <!-- ممر سفلي (12%) للمشي تتواجد فيه العربة -->
+                        <div class="h-[12%] w-full"></div>
                     </div>
 
-                    <!-- الصف السفلي -->
-                    <div class="flex justify-between h-[40%]">
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);">13</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">12</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">11</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">10</div>
-                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);">9</div>
-                    </div>
-                </div>
+                    <!-- طبقة الرسم (SVG Path) -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        
+                        <!-- مسار منتج 22: يمشي في الممر الأيسر (170) ثم ينحرف للرف (280) -->
+                        <path id="path-22" d="M 500 940 L 200 940 Q 170 940 170 910 L 170 260 L 280 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        
+                        <!-- مسار منتج 9: يمشي في الممر الأيمن (830) ثم ينحرف للرف (940) -->
+                        <path id="path-9" d="M 500 940 L 800 940 Q 830 940 830 910 L 830 740 L 940 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        
+                        <!-- مسار منتج 19: يمشي في الممر الأيمن (830) ثم ينحرف للرف (940) -->
+                        <path id="path-19" d="M 500 940 L 800 940 Q 830 940 830 910 L 830 260 L 940 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        
+                        <!-- المسار الذكي المحدث (التوجه للكل): يمشي مستقيم، ينحرف للمنتج، يرجع للمستقيم ويكمل -->
+                        <path id="path-all" d="M 500 940 L 800 940 Q 830 940 830 910 L 830 740 L 940 740 L 830 740 L 830 260 L 940 260 L 830 260 L 830 90 Q 830 60 800 60 L 200 60 Q 170 60 170 90 L 170 260 L 280 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        
+                        <!-- الدبابيس (النقاط الحمراء) تقع في منتصف الرفوف تماماً -->
+                        <circle id="pin-22" class="pin-22 pin-all hidden" cx="280" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-9" class="pin-9 pin-all hidden" cx="940" cy="740" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-19" class="pin-19 pin-all hidden" cx="940" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                    </svg>
 
-                <!-- طبقة الرسم (Smooth SVG Paths) -->
-                <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <path id="path-22" d="M 500 900 L 500 550 Q 500 500 450 500 L 340 500 Q 290 500 290 450 L 290 200" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                    <path id="path-12" d="M 500 900 L 500 550 Q 500 500 450 500 L 340 500 Q 290 500 290 550 L 290 800" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                    <path id="path-19" d="M 500 900 L 500 550 Q 500 500 550 500 L 870 500 Q 920 500 920 450 L 920 200" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                    <path id="path-all" d="M 500 900 L 340 900 Q 290 900 290 850 L 290 200 Q 290 100 340 100 L 870 100 Q 920 100 920 150 L 920 200" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                    <circle id="pin-22" class="pin-22 pin-all hidden" cx="290" cy="200" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                    <circle id="pin-12" class="pin-12 pin-all hidden" cx="290" cy="800" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                    <circle id="pin-19" class="pin-19 pin-all hidden" cx="920" cy="200" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                </svg>
-
-                <!-- موقع العربة الحالي -->
-                <div class="absolute bottom-[8%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center translate-y-1/2">
-                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
-                        <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
+                    <!-- موقع العربة الحالي (مثبت في أسفل الممر السفلي) -->
+                    <div class="absolute bottom-[2%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center">
+                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
+                            <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -253,7 +272,6 @@
         <aside class="w-[17%] bg-brand-panel rounded-xl p-4 flex flex-col shadow-inner h-full">
             <h2 class="text-lg font-black text-center mb-3 text-gray-800">السلة الالكترونية</h2>
             
-            <!-- تم تغيير النص وتخفيف الزوايا -->
             <button onclick="drawRoute('all')" class="w-full bg-brand-blue hover:bg-brand-blueHover text-white py-2 rounded-md font-bold text-xs shadow-md transition-transform active:scale-95 mb-2 flex items-center justify-center gap-1.5">
                 <i class="ph-bold ph-path text-sm"></i> التوجه للكل
             </button>
@@ -276,7 +294,7 @@
                     </div>
                 </div>
 
-                <!-- منتج 2 -->
+                <!-- منتج 2 (عصير يوجه لممر 9 - تحت يسار) -->
                 <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=200&q=80" alt="عصير برتقال" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
@@ -287,7 +305,7 @@
                     
                     <!-- أزرار التحكم -->
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('12')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('9')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
