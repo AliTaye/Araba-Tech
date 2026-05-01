@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عربـتِك 🛒🤎</title>
+    
+    <!-- خطوط عربية حديثة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#F5F0E6',       
+                            panel: '#EADFC8',    
+                            card: '#FCFAF8',     
+                            blue: '#2563EB',     
+                            blueHover: '#1D4ED8',
+                            red: '#DC2626',      
+                            redHover: '#B91C1C',
+                            green: '#16A34A',    
+                            greenHover: '#15803D',
+                            textMain: '#292524', 
+                            textMuted: '#78716C' 
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #F5F0E6;
+            touch-action: none; 
+            overflow: hidden;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .mic-ripple::before, .mic-ripple::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: -1;
+            animation: ripple 2s infinite cubic-bezier(0.0, 0.0, 0.2, 1);
+        }
+        .mic-ripple::after {
+            animation-delay: 1s;
+        }
+
+        /* أنيميشن ناعم لرسم المسار على الخريطة */
+        .path-line {
+            stroke-dasharray: 4000;
+            stroke-dashoffset: 4000;
+            animation: drawPath 3s ease-in-out forwards;
+        }
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .location-pulse {
+            animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 15px rgba(59,130,246,0.5); }
+            50% { opacity: 0.8; transform: scale(1.1); box-shadow: 0 0 30px rgba(59,130,246,0.8); }
+        }
+
+        /* أنيميشن موجات الصوت للمساعد */
+        @keyframes sound-wave {
+            0%, 100% { height: 8px; opacity: 0.5; }
+            50% { height: 32px; opacity: 1; }
+        }
+        .sound-bar {
+            animation: sound-wave 1s ease-in-out infinite;
+            border-radius: 9999px;
+            background-color: white;
+            width: 4px;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col font-sans text-brand-textMain antialiased">
+
+    <!-- الشريط العلوي (Top Bar) -->
+    <header class="flex items-center justify-between px-8 py-4 relative">
+        
+        <!-- اليمين: الترحيب، تسجيل الخروج، الإعدادات -->
+        <nav class="flex items-center gap-5 text-brand-textMain font-bold text-lg w-auto">
+            <a href="#" class="flex items-center gap-1.5 hover:text-brand-blue transition">
+                <i class="ph-fill ph-gear text-2xl"></i> الإعدادات
+            </a>
+            <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
+            <a href="#" class="flex items-center gap-1.5 text-brand-red hover:text-brand-redHover transition">
+                <i class="ph-bold ph-sign-out text-2xl"></i> تسجيل الخروج
+            </a>
+            <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
+            <!-- تقليل انحناء أيقونة المستخدم لتصبح رسمية أكثر -->
+            <div class="flex items-center gap-2 bg-white/60 px-3 py-1.5 rounded-lg shadow-sm border border-white/50">
+                <div class="w-7 h-7 bg-brand-blue rounded-full flex items-center justify-center text-white">
+                    <i class="ph-fill ph-user text-sm"></i>
+                </div>
+                <span class="text-brand-textMain text-sm">أهلاً، مجدي</span>
+            </div>
+        </nav>
+
+        <!-- المنتصف: الشعار -->
+        <div class="absolute left-1/2 -translate-x-1/2">
+            <div class="font-black text-3xl tracking-wide flex items-center gap-2 text-brand-textMain">
+                عربـتِك 🛒🤎
+            </div>
+        </div>
+
+        <!-- اليسار: مؤشرات الجهاز -->
+        <div class="flex items-center justify-end gap-5 text-2xl text-brand-textMuted w-auto">
+            <i class="ph-fill ph-battery-full text-brand-textMain"></i>
+            <i class="ph-bold ph-wifi-high text-brand-textMain"></i>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي (مقسم إلى: يمين 16.6%، وسط 66.6%، يسار 16.6%) -->
+    <main class="flex-1 flex gap-4 px-5 pb-5 overflow-hidden w-full">
+        
+        <!-- السدس الأيمن: العروض (17%) -->
+        <aside class="w-[17%] bg-brand-panel rounded-xl p-4 flex flex-col shadow-inner h-full">
+            <h2 class="text-lg font-black text-center mb-3 text-[#A05E2C]">عروض خاصة 🔥</h2>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3">
+                <!-- عرض 1 المدمج -->
+                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=200&q=80" alt="حليب" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">كرتون حليب المراعي</h3>
+                    </div>
+                    
+                    <div class="flex items-center justify-between px-1 mt-1">
+                        <div class="flex flex-col">
+                            <span class="text-base font-black text-brand-red leading-none">48 <span class="text-[9px]">ريال</span></span>
+                            <span class="text-[10px] text-brand-textMuted line-through leading-none mt-1">60 ريال</span>
+                        </div>
+                        <span class="text-[#D97706] text-[9px] font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">خصم 20%</span>
+                    </div>
+
+                    <button class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
+                        <i class="ph-bold ph-shopping-cart text-sm"></i> أضف للسلة
+                    </button>
+                </div>
+
+                <!-- عرض 2 المدمج -->
+                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=200&q=80" alt="خبز" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">خبز الصامولي</h3>
+                    </div>
+                    
+                    <div class="flex items-center justify-between px-1 mt-1">
+                        <div class="flex flex-col">
+                            <span class="text-base font-black text-brand-red leading-none">1 <span class="text-[9px]">ريال</span></span>
+                        </div>
+                        <span class="text-[#D97706] text-[9px] font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">1+1 مجاناً</span>
+                    </div>
+
+                    <button class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
+                        <i class="ph-bold ph-shopping-cart text-sm"></i> أضف للسلة
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- الثلثين الأوسط: الخريطة (66%) -->
+        <section class="w-[66%] bg-brand-panel rounded-xl p-5 flex flex-col relative shadow-inner">
+            
+            <!-- حاوية الخريطة -->
+            <div class="flex-1 w-full relative bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-5">
+                
+                <!-- رسم الأرفف (Aisles) -->
+                <div class="w-full h-full flex flex-col justify-between">
+                    <!-- الصف العلوي -->
+                    <div class="flex justify-between h-[40%]">
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);">23</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">22</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">21</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">20</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);">19</div>
+                    </div>
+                    
+                    <!-- مساحة الممر الأوسط -->
+                    <div class="h-[20%] relative w-full flex items-center justify-center">
+                        <hr class="absolute w-full border-gray-400 border-dashed z-0 opacity-40 border-[2px]">
+                    </div>
+
+                    <!-- الصف السفلي -->
+                    <div class="flex justify-between h-[40%]">
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);">13</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">12</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">11</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">10</div>
+                        <div class="w-[16%] bg-[#E8DECE] rounded-sm border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10" style="clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);">9</div>
+                    </div>
+                </div>
+
+                <!-- طبقة الرسم (Smooth SVG Paths) -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                    <path id="path-22" d="M 500 900 L 500 550 Q 500 500 450 500 L 340 500 Q 290 500 290 450 L 290 200" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                    <path id="path-12" d="M 500 900 L 500 550 Q 500 500 450 500 L 340 500 Q 290 500 290 550 L 290 800" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                    <path id="path-19" d="M 500 900 L 500 550 Q 500 500 550 500 L 870 500 Q 920 500 920 450 L 920 200" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                    <path id="path-all" d="M 500 900 L 340 900 Q 290 900 290 850 L 290 200 Q 290 100 340 100 L 870 100 Q 920 100 920 150 L 920 200" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                    <circle id="pin-22" class="pin-22 pin-all hidden" cx="290" cy="200" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                    <circle id="pin-12" class="pin-12 pin-all hidden" cx="290" cy="800" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                    <circle id="pin-19" class="pin-19 pin-all hidden" cx="920" cy="200" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                </svg>
+
+                <!-- موقع العربة الحالي -->
+                <div class="absolute bottom-[8%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center translate-y-1/2">
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
+                        <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أزرار التحكم السفلية للخريطة -->
+            <div class="w-full flex gap-3 mt-4 justify-center">
+                <button id="btn-cancel-route" onclick="cancelRoute()" class="hidden flex-1 bg-brand-red hover:bg-brand-redHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95">
+                    إلغاء المسار
+                </button>
+                <button onclick="openVoiceModal()" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
+                    <i class="ph-fill ph-microphone text-3xl"></i>
+                    تحدث للعربة
+                </button>
+            </div>
+        </section>
+
+        <!-- السدس الأيسر: السلة (17%) -->
+        <aside class="w-[17%] bg-brand-panel rounded-xl p-4 flex flex-col shadow-inner h-full">
+            <h2 class="text-lg font-black text-center mb-3 text-gray-800">السلة الالكترونية</h2>
+            
+            <!-- تم تغيير النص وتخفيف الزوايا -->
+            <button onclick="drawRoute('all')" class="w-full bg-brand-blue hover:bg-brand-blueHover text-white py-2 rounded-md font-bold text-xs shadow-md transition-transform active:scale-95 mb-2 flex items-center justify-center gap-1.5">
+                <i class="ph-bold ph-path text-sm"></i> التوجه للكل
+            </button>
+            
+            <!-- قائمة المنتجات -->
+            <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3 mt-1">
+                <!-- منتج 1 -->
+                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1587486913049-53fc88980cfc?auto=format&fit=crop&w=150&q=80" alt="بيض" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">طبق بيض فقيه</h3>
+                    </div>
+                    
+                    <p class="font-black text-brand-blue text-sm px-1 text-center">18.99 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
+                    
+                    <!-- أزرار التحكم -->
+                    <div class="flex w-full gap-1.5 mt-1">
+                        <button onclick="drawRoute('22')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+
+                <!-- منتج 2 -->
+                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=200&q=80" alt="عصير برتقال" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">كرتون عصير الربيع</h3>
+                    </div>
+                    
+                    <p class="font-black text-brand-blue text-sm px-1 text-center">29.00 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
+                    
+                    <!-- أزرار التحكم -->
+                    <div class="flex w-full gap-1.5 mt-1">
+                        <button onclick="drawRoute('12')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+
+                <!-- منتج 3 -->
+                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=150&q=80" alt="بطاطس" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">بطاطس ساديا</h3>
+                    </div>
+                    
+                    <p class="font-black text-brand-blue text-sm px-1 text-center">12.95 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
+                    
+                    <!-- أزرار التحكم -->
+                    <div class="flex w-full gap-1.5 mt-1">
+                        <button onclick="drawRoute('19')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Modal التفاعل الصوتي -->
+    <div id="voice-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        
+        <!-- زر الإغلاق -->
+        <button onclick="closeVoiceModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
+            <i class="ph ph-x text-4xl"></i>
+        </button>
+
+        <!-- منطقة المايك -->
+        <div class="relative flex items-center justify-center w-64 h-64 mb-2">
+            <!-- إطار متقطع دائرى يلف حول المايك -->
+            <div class="absolute inset-6 rounded-full border-[1.5px] border-dashed border-white/30 animate-[spin_15s_linear_infinite] pointer-events-none"></div>
+            
+            <div id="mic-pulse" class="absolute inset-0 rounded-full"></div>
+            <button onclick="closeVoiceModal()" class="relative w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.3)] z-10 cursor-pointer hover:scale-105 transition-transform">
+                <i class="ph-fill ph-microphone text-5xl text-brand-textMain"></i>
+            </button>
+        </div>
+        
+        <h2 class="text-white text-4xl font-bold drop-shadow-md mb-6">أنا أستمع...</h2>
+
+        <!-- موجات الصوت (Sound Waveform) -->
+        <div class="flex items-center justify-center gap-2 mb-12 h-10">
+            <div class="sound-bar" style="animation-delay: 0.0s"></div>
+            <div class="sound-bar" style="animation-delay: 0.2s"></div>
+            <div class="sound-bar" style="animation-delay: 0.4s"></div>
+            <div class="sound-bar" style="animation-delay: 0.1s"></div>
+            <div class="sound-bar" style="animation-delay: 0.3s"></div>
+        </div>
+
+        <!-- المقترحات المساعدة -->
+        <div class="flex flex-col items-center opacity-0 transform translate-y-4 transition-all duration-500 delay-300" id="voice-suggestions">
+            <p class="text-white/60 text-sm mb-4">يمكنك أن تسألني:</p>
+            <div class="flex items-center gap-3">
+                <button class="flex items-center gap-2 border border-white/30 text-white px-6 py-3 rounded-full hover:bg-white/10 hover:border-white transition-all text-sm cursor-pointer shadow-sm">
+                    <i class="ph-fill ph-map-pin text-xl"></i>
+                    "أين أجد الحليب؟"
+                </button>
+                <button class="flex items-center gap-2 border border-white/30 text-white px-6 py-3 rounded-full hover:bg-white/10 hover:border-white transition-all text-sm cursor-pointer shadow-sm">
+                    <i class="ph-fill ph-shopping-cart text-xl"></i>
+                    "أضف تفاح إلى السلة"
+                </button>
+                <button class="flex items-center gap-2 border border-white/30 text-white px-6 py-3 rounded-full hover:bg-white/10 hover:border-white transition-all text-sm cursor-pointer shadow-sm">
+                    <i class="ph-fill ph-receipt text-xl"></i>
+                    "كم إجمالي الفاتورة؟"
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ملفات الجافاسكربت لإدارة التفاعل -->
+    <script>
+        function drawRoute(routeId) {
+            document.querySelectorAll('svg path').forEach(p => {
+                p.classList.add('hidden');
+                p.classList.remove('path-line'); 
+            });
+            document.querySelectorAll('svg circle').forEach(c => c.classList.add('hidden'));
+
+            const path = document.getElementById(`path-${routeId}`);
+            if(path) {
+                path.classList.remove('hidden');
+                void path.offsetWidth; 
+                path.classList.add('path-line');
+            }
+
+            const pins = document.querySelectorAll(`.pin-${routeId}`);
+            pins.forEach(pin => {
+                pin.classList.remove('hidden');
+            });
+
+            document.getElementById('btn-cancel-route').classList.remove('hidden');
+        }
+
+        function cancelRoute() {
+            document.querySelectorAll('svg path').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('svg circle').forEach(c => c.classList.add('hidden'));
+            document.getElementById('btn-cancel-route').classList.add('hidden');
+        }
+
+        function openVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const pulse = document.getElementById('mic-pulse');
+            const suggestions = document.getElementById('voice-suggestions');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            pulse.classList.add('mic-ripple');
+            
+            setTimeout(() => {
+                suggestions.classList.remove('opacity-0', 'translate-y-4');
+            }, 150);
+
+            setTimeout(() => {
+                if(!modal.classList.contains('pointer-events-none')) {
+                    closeVoiceModal();
+                    drawRoute('19'); 
+                }
+            }, 6000);
+        }
+
+        function closeVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const pulse = document.getElementById('mic-pulse');
+            const suggestions = document.getElementById('voice-suggestions');
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            suggestions.classList.add('opacity-0', 'translate-y-4');
+
+            setTimeout(() => {
+                pulse.classList.remove('mic-ripple');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
