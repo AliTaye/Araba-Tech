@@ -86,7 +86,6 @@
             50% { opacity: 0.8; transform: scale(1.1); box-shadow: 0 0 30px rgba(59,130,246,0.8); }
         }
 
-        /* أنيميشن موجات الصوت للمساعد */
         @keyframes sound-wave {
             0%, 100% { height: 8px; opacity: 0.5; }
             50% { height: 32px; opacity: 1; }
@@ -97,14 +96,21 @@
             background-color: white;
             width: 4px;
         }
+
+        /* أنيميشن بسيط عند إضافة منتج للسلة */
+        .fade-in-card {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col font-sans text-brand-textMain antialiased">
 
     <!-- الشريط العلوي (Top Bar) -->
     <header class="flex items-center justify-between px-8 py-4 relative">
-        
-        <!-- اليمين: الترحيب، تسجيل الخروج، الإعدادات -->
         <nav class="flex items-center gap-5 text-brand-textMain font-bold text-lg w-auto">
             <a href="#" class="flex items-center gap-1.5 hover:text-brand-blue transition">
                 <i class="ph-fill ph-gear text-2xl"></i> الإعدادات
@@ -122,21 +128,19 @@
             </div>
         </nav>
 
-        <!-- المنتصف: الشعار -->
         <div class="absolute left-1/2 -translate-x-1/2">
             <div class="font-black text-3xl tracking-wide flex items-center gap-2 text-brand-textMain">
                 عربـتِك 🛒🤎
             </div>
         </div>
 
-        <!-- اليسار: مؤشرات الجهاز -->
         <div class="flex items-center justify-end gap-5 text-2xl text-brand-textMuted w-auto">
             <i class="ph-fill ph-battery-full text-brand-textMain"></i>
             <i class="ph-bold ph-wifi-high text-brand-textMain"></i>
         </div>
     </header>
 
-    <!-- المحتوى الرئيسي (مقسم إلى: يمين 16.6%، وسط 66.6%، يسار 16.6%) -->
+    <!-- المحتوى الرئيسي -->
     <main class="flex-1 flex gap-4 px-5 pb-5 overflow-hidden w-full">
         
         <!-- السدس الأيمن: العروض (17%) -->
@@ -144,13 +148,12 @@
             <h2 class="text-lg font-black text-center mb-3 text-[#A05E2C]">عروض خاصة 🔥</h2>
 
             <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3">
-                <!-- عرض 1 -->
+                <!-- عرض الحليب -->
                 <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=200&q=80" alt="حليب" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
                         <h3 class="font-bold text-[13px] leading-tight truncate flex-1">كرتون حليب المراعي</h3>
                     </div>
-                    
                     <div class="flex items-center justify-between px-1 mt-1">
                         <div class="flex flex-col">
                             <span class="text-base font-black text-brand-red leading-none">48 <span class="text-[9px]">ريال</span></span>
@@ -158,27 +161,25 @@
                         </div>
                         <span class="text-[#D97706] text-[9px] font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">خصم 20%</span>
                     </div>
-
                     <button class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
                         <i class="ph-bold ph-shopping-cart text-sm"></i> أضف للسلة
                     </button>
                 </div>
 
-                <!-- عرض 2 -->
-                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                <!-- عرض الخبز (قابل للإضافة للسلة) -->
+                <div id="offer-bread" class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative transition-opacity duration-300">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=200&q=80" alt="خبز" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
                         <h3 class="font-bold text-[13px] leading-tight truncate flex-1">خبز الصامولي</h3>
                     </div>
-                    
                     <div class="flex items-center justify-between px-1 mt-1">
                         <div class="flex flex-col">
                             <span class="text-base font-black text-brand-red leading-none">1 <span class="text-[9px]">ريال</span></span>
                         </div>
                         <span class="text-[#D97706] text-[9px] font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">1+1 مجاناً</span>
                     </div>
-
-                    <button class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
+                    <!-- زر الإضافة -->
+                    <button onclick="addBreadToCart()" class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
                         <i class="ph-bold ph-shopping-cart text-sm"></i> أضف للسلة
                     </button>
                 </div>
@@ -187,19 +188,11 @@
 
         <!-- الثلثين الأوسط: الخريطة (66%) -->
         <section class="w-[66%] bg-brand-panel rounded-xl p-5 flex flex-col relative shadow-inner">
-            
-            <!-- حاوية الخريطة -->
             <div class="flex-1 w-full bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-4">
-                
-                <!-- حاوية مشتركة (Relative) لدمج الـ HTML والـ SVG بدقة متناهية -->
                 <div class="relative w-full h-full">
-                    
-                    <!-- رسم الأرفف والممرات هندسياً لتفادي التقاطع -->
+                    <!-- رسم الأرفف -->
                     <div class="w-full h-full flex flex-col">
-                        <!-- ممر علوي (12%) للمشي -->
                         <div class="h-[12%] w-full"></div>
-
-                        <!-- الصف العلوي (28%) مستطيلات مثالية ورسمية -->
                         <div class="flex justify-between h-[28%] w-full">
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">23</div>
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">22</div>
@@ -207,13 +200,9 @@
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">20</div>
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">19</div>
                         </div>
-                        
-                        <!-- ممر أوسط (20%) للمشي -->
                         <div class="h-[20%] relative w-full flex items-center justify-center">
                             <hr class="absolute w-full border-gray-400 border-dashed z-0 opacity-40 border-[2px]">
                         </div>
-
-                        <!-- الصف السفلي (28%) مستطيلات مثالية ورسمية -->
                         <div class="flex justify-between h-[28%] w-full">
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">13</div>
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">12</div>
@@ -221,33 +210,33 @@
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">10</div>
                             <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">9</div>
                         </div>
-
-                        <!-- ممر سفلي (12%) للمشي تتواجد فيه العربة -->
                         <div class="h-[12%] w-full"></div>
                     </div>
 
                     <!-- طبقة الرسم (SVG Path) -->
+                    <!-- الأبعاد الهندسية:
+                         ممر يسار: x=170 | ممر وسط-يسار: x=390 | ممر وسط: x=500 | ممر يمين: x=830
+                         الرفوف: 22(يمين الرف=340) | 11(أعلى الرف=600) | 9(يسار الرف=880) | 19(أسفل الرف=400)
+                    -->
                     <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
                         
-                        <!-- مسار منتج 22: يمشي في الممر الأيسر (170) ثم ينحرف للرف (280) -->
-                        <path id="path-22" d="M 500 940 L 200 940 Q 170 940 170 910 L 170 260 L 280 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        <!-- المسارات الفردية -->
+                        <path id="path-eggs" d="M 500 940 L 390 940 L 390 260 L 340 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        <path id="path-juice" d="M 500 940 L 830 940 L 830 740 L 880 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        <path id="path-fries" d="M 500 940 L 830 940 L 830 400 L 940 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        <path id="path-bread" d="M 500 940 L 500 600" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
                         
-                        <!-- مسار منتج 9: يمشي في الممر الأيمن (830) ثم ينحرف للرف (940) -->
-                        <path id="path-9" d="M 500 940 L 800 940 Q 830 940 830 910 L 830 740 L 940 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        <!-- المسار الذكي يتولد عبر الجافاسكربت -->
+                        <path id="path-all" d="" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
                         
-                        <!-- مسار منتج 19: يمشي في الممر الأيمن (830) ثم ينحرف للرف (940) -->
-                        <path id="path-19" d="M 500 940 L 800 940 Q 830 940 830 910 L 830 260 L 940 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        
-                        <!-- المسار الذكي المحدث (التوجه للكل): يمشي مستقيم، ينحرف للمنتج، يرجع للمستقيم ويكمل -->
-                        <path id="path-all" d="M 500 940 L 800 940 Q 830 940 830 910 L 830 740 L 940 740 L 830 740 L 830 260 L 940 260 L 830 260 L 830 90 Q 830 60 800 60 L 200 60 Q 170 60 170 90 L 170 260 L 280 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        
-                        <!-- الدبابيس (النقاط الحمراء) تقع في منتصف الرفوف تماماً -->
-                        <circle id="pin-22" class="pin-22 pin-all hidden" cx="280" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                        <circle id="pin-9" class="pin-9 pin-all hidden" cx="940" cy="740" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                        <circle id="pin-19" class="pin-19 pin-all hidden" cx="940" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <!-- الدبابيس (المنتجات) تقع على أطراف الرفوف تماماً كما في الواقع -->
+                        <circle id="pin-eggs" class="pin-all hidden" cx="340" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 22: الجانب الأيمن -->
+                        <circle id="pin-juice" class="pin-all hidden" cx="880" cy="740" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 9: الجانب الأيسر -->
+                        <circle id="pin-fries" class="pin-all hidden" cx="940" cy="400" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 19: الوجه السفلي -->
+                        <circle id="pin-bread" class="pin-all hidden" cx="500" cy="600" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 11: الوجه العلوي -->
                     </svg>
 
-                    <!-- موقع العربة الحالي (مثبت في أسفل الممر السفلي) -->
+                    <!-- موقع العربة الحالي -->
                     <div class="absolute bottom-[2%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center">
                         <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
                             <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
@@ -256,7 +245,7 @@
                 </div>
             </div>
 
-            <!-- أزرار التحكم السفلية للخريطة -->
+            <!-- أزرار التحكم -->
             <div class="w-full flex gap-3 mt-4 justify-center">
                 <button id="btn-cancel-route" onclick="cancelRoute()" class="hidden flex-1 bg-brand-red hover:bg-brand-redHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95">
                     إلغاء المسار
@@ -276,82 +265,76 @@
                 <i class="ph-bold ph-path text-sm"></i> التوجه للكل
             </button>
             
-            <!-- قائمة المنتجات -->
-            <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3 mt-1">
-                <!-- منتج 1 -->
-                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+            <!-- قائمة المنتجات (أضفت data-id لكل منتج للتعرف عليه برمجياً) -->
+            <div id="cart-list" class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3 mt-1">
+                
+                <div class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative" data-id="eggs">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1587486913049-53fc88980cfc?auto=format&fit=crop&w=150&q=80" alt="بيض" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
                         <h3 class="font-bold text-[13px] leading-tight truncate flex-1">طبق بيض فقيه</h3>
                     </div>
-                    
                     <p class="font-black text-brand-blue text-sm px-1 text-center">18.99 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
-                    
-                    <!-- أزرار التحكم -->
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('22')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('eggs')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
 
-                <!-- منتج 2 (عصير يوجه لممر 9 - تحت يسار) -->
-                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                <div class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative" data-id="juice">
                     <div class="flex items-center gap-2">
-                        <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=200&q=80" alt="عصير برتقال" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <img src="https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=200&q=80" alt="عصير" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
                         <h3 class="font-bold text-[13px] leading-tight truncate flex-1">كرتون عصير الربيع</h3>
                     </div>
-                    
                     <p class="font-black text-brand-blue text-sm px-1 text-center">29.00 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
-                    
-                    <!-- أزرار التحكم -->
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('9')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('juice')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
 
-                <!-- منتج 3 -->
-                <div class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative">
+                <div class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative" data-id="fries">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=150&q=80" alt="بطاطس" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
                         <h3 class="font-bold text-[13px] leading-tight truncate flex-1">بطاطس ساديا</h3>
                     </div>
-                    
                     <p class="font-black text-brand-blue text-sm px-1 text-center">12.95 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
-                    
-                    <!-- أزرار التحكم -->
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('19')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('fries')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
+
+                <!-- منتج الخبز (مخفي مبدئياً، يظهر عند إضافته من العروض) -->
+                <div id="cart-item-bread" class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex-col gap-2 relative hidden fade-in-card" data-id="bread">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=200&q=80" alt="خبز" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">خبز الصامولي</h3>
+                    </div>
+                    <p class="font-black text-brand-blue text-sm px-1 text-center">1.00 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
+                    <div class="flex w-full gap-1.5 mt-1">
+                        <button onclick="drawRoute('bread')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="removeBread()" class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
     </main>
 
-    <!-- Modal التفاعل الصوتي -->
+    <!-- Modal التفاعل الصوتي (لم يتم التغيير عليه) -->
     <div id="voice-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-        
-        <!-- زر الإغلاق -->
         <button onclick="closeVoiceModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
             <i class="ph ph-x text-4xl"></i>
         </button>
-
-        <!-- منطقة المايك -->
         <div class="relative flex items-center justify-center w-64 h-64 mb-2">
-            <!-- إطار متقطع دائرى يلف حول المايك -->
             <div class="absolute inset-6 rounded-full border-[1.5px] border-dashed border-white/30 animate-[spin_15s_linear_infinite] pointer-events-none"></div>
-            
             <div id="mic-pulse" class="absolute inset-0 rounded-full"></div>
             <button onclick="closeVoiceModal()" class="relative w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(255,255,255,0.3)] z-10 cursor-pointer hover:scale-105 transition-transform">
                 <i class="ph-fill ph-microphone text-5xl text-brand-textMain"></i>
             </button>
         </div>
-        
         <h2 class="text-white text-4xl font-bold drop-shadow-md mb-6">أنا أستمع...</h2>
-
-        <!-- موجات الصوت (Sound Waveform) -->
         <div class="flex items-center justify-center gap-2 mb-12 h-10">
             <div class="sound-bar" style="animation-delay: 0.0s"></div>
             <div class="sound-bar" style="animation-delay: 0.2s"></div>
@@ -359,8 +342,6 @@
             <div class="sound-bar" style="animation-delay: 0.1s"></div>
             <div class="sound-bar" style="animation-delay: 0.3s"></div>
         </div>
-
-        <!-- المقترحات المساعدة -->
         <div class="flex flex-col items-center opacity-0 transform translate-y-4 transition-all duration-500 delay-300" id="voice-suggestions">
             <p class="text-white/60 text-sm mb-4">يمكنك أن تسألني:</p>
             <div class="flex items-center gap-3">
@@ -382,34 +363,144 @@
 
     <!-- ملفات الجافاسكربت لإدارة التفاعل -->
     <script>
+        let isAllRouteActive = false;
+
+        // دالة توليد المسار الذكي برمجياً بناءً على محتويات السلة
+        function updateSmartPath() {
+            const items = document.querySelectorAll('.cart-item-card:not(.hidden)');
+            const activeIds = Array.from(items).map(el => el.dataset.id);
+            
+            // البداية دائماً من موقع العربة (الممر السفلي وسط)
+            let d = "M 500 940 "; 
+
+            // ترتيب منطقي لجمع الأغراض: العصير (يمين أسفل) -> البطاطس (يمين أعلى) -> الخبز (وسط أعلى) -> البيض (يسار أعلى)
+            if (activeIds.includes('juice') || activeIds.includes('fries')) {
+                d += "L 830 940 "; // التوجه للممر الأيمن
+                
+                if (activeIds.includes('juice')) {
+                    d += "L 830 740 L 880 740 L 830 740 "; // دخول رف العصير والتراجع
+                }
+                
+                if (activeIds.includes('fries')) {
+                    d += "L 830 400 L 940 400 L 830 400 "; // الصعود ودخول رف البطاطس والتراجع
+                }
+                
+                // التراجع للتقاطع الأوسط للعبور إلى الجهة اليسرى
+                d += "L 830 500 "; 
+            }
+
+            if (activeIds.includes('bread') || activeIds.includes('eggs')) {
+                // إذا لم نكن في الممر الأوسط (بسبب عدم وجود منتجات في الجهة اليمنى)، اصعد له
+                if (!activeIds.includes('juice') && !activeIds.includes('fries')) {
+                    d += "L 500 500 "; 
+                } else {
+                    d += "L 500 500 "; // العبور للمنتصف
+                }
+
+                if (activeIds.includes('bread')) {
+                    d += "L 500 600 L 500 500 "; // دخول رف الخبز والتراجع
+                }
+
+                if (activeIds.includes('eggs')) {
+                    d += "L 390 500 L 390 260 L 340 260 "; // العبور للممر الأيسر، الصعود، ودخول رف البيض
+                }
+            }
+
+            // تطبيق المسار الذكي المولد على عنصر الـ SVG
+            document.getElementById('path-all').setAttribute('d', d);
+        }
+
+        // دالة رسم المسارات (فردية أو شاملة)
         function drawRoute(routeId) {
+            // تحديث المسار الشامل قبل الرسم في حال تم إضافة/حذف منتجات
+            if (routeId === 'all') {
+                updateSmartPath();
+                isAllRouteActive = true;
+            } else {
+                isAllRouteActive = false;
+            }
+
+            // إخفاء كل المسارات والدبابيس أولاً
             document.querySelectorAll('svg path').forEach(p => {
                 p.classList.add('hidden');
                 p.classList.remove('path-line'); 
             });
             document.querySelectorAll('svg circle').forEach(c => c.classList.add('hidden'));
 
+            // إظهار المسار المطلوب
             const path = document.getElementById(`path-${routeId}`);
             if(path) {
                 path.classList.remove('hidden');
+                // إعادة تشغيل الأنيميشن
                 void path.offsetWidth; 
                 path.classList.add('path-line');
             }
 
-            const pins = document.querySelectorAll(`.pin-${routeId}`);
-            pins.forEach(pin => {
-                pin.classList.remove('hidden');
-            });
+            // إظهار الدبابيس المرتبطة بالمسار
+            if (routeId === 'all') {
+                const items = document.querySelectorAll('.cart-item-card:not(.hidden)');
+                items.forEach(item => {
+                    const pin = document.getElementById(`pin-${item.dataset.id}`);
+                    if(pin) pin.classList.remove('hidden');
+                });
+            } else {
+                const pin = document.getElementById(`pin-${routeId}`);
+                if(pin) pin.classList.remove('hidden');
+            }
 
             document.getElementById('btn-cancel-route').classList.remove('hidden');
         }
 
         function cancelRoute() {
+            isAllRouteActive = false;
             document.querySelectorAll('svg path').forEach(p => p.classList.add('hidden'));
             document.querySelectorAll('svg circle').forEach(c => c.classList.add('hidden'));
             document.getElementById('btn-cancel-route').classList.add('hidden');
         }
 
+        // وظيفة إضافة الخبز من العروض للسلة
+        function addBreadToCart() {
+            // إخفاء كرت العرض بإفيكت
+            const offerCard = document.getElementById('offer-bread');
+            offerCard.classList.add('opacity-0');
+            setTimeout(() => {
+                offerCard.style.display = 'none';
+            }, 300);
+
+            // إظهار المنتج في السلة
+            const cartItem = document.getElementById('cart-item-bread');
+            cartItem.classList.remove('hidden');
+            cartItem.classList.add('flex');
+
+            // إذا كان المسار الشامل مفعل، قم بإعادة رسمه ليحتوي على الخبز فوراً!
+            if(isAllRouteActive) {
+                setTimeout(() => {
+                    drawRoute('all');
+                }, 100); // تأخير بسيط لضمان تحديث الـ DOM
+            }
+        }
+
+        // وظيفة إزالة الخبز للعودة للحالة الأصلية (اختياري)
+        function removeBread() {
+            document.getElementById('cart-item-bread').classList.add('hidden');
+            document.getElementById('cart-item-bread').classList.remove('flex');
+            
+            const offerCard = document.getElementById('offer-bread');
+            offerCard.style.display = 'flex';
+            setTimeout(() => {
+                offerCard.classList.remove('opacity-0');
+            }, 10);
+
+            if(isAllRouteActive) drawRoute('all');
+            else {
+                // إخفاء دبوس الخبز ومساره إذا كان مفعلا
+                const breadPath = document.getElementById('path-bread');
+                const breadPin = document.getElementById('pin-bread');
+                if(!breadPath.classList.contains('hidden')) cancelRoute();
+            }
+        }
+
+        // المساعد الصوتي
         function openVoiceModal() {
             const modal = document.getElementById('voice-modal');
             const pulse = document.getElementById('mic-pulse');
@@ -425,7 +516,7 @@
             setTimeout(() => {
                 if(!modal.classList.contains('pointer-events-none')) {
                     closeVoiceModal();
-                    drawRoute('19'); 
+                    drawRoute('fries'); 
                 }
             }, 6000);
         }
@@ -442,6 +533,9 @@
                 pulse.classList.remove('mic-ripple');
             }, 300);
         }
+
+        // تهيئة مبدئية لتحديث المسار الذكي
+        updateSmartPath();
     </script>
 </body>
 </html>
