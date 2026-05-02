@@ -226,14 +226,20 @@
                         <path id="path-fries" d="M 500 940 L 830 940 L 830 400 L 940 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
                         <path id="path-bread" d="M 500 940 L 500 600" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
                         
+                        <!-- مسار الشبس الجديد -->
+                        <path id="path-chips" d="M 500 940 L 390 940 L 390 400 L 340 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        
                         <!-- المسار الذكي يتولد عبر الجافاسكربت -->
                         <path id="path-all" d="" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
                         
                         <!-- الدبابيس (المنتجات) تقع على أطراف الرفوف تماماً كما في الواقع -->
-                        <circle id="pin-eggs" class="pin-all hidden" cx="340" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 22: الجانب الأيمن -->
-                        <circle id="pin-juice" class="pin-all hidden" cx="880" cy="740" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 9: الجانب الأيسر -->
-                        <circle id="pin-fries" class="pin-all hidden" cx="940" cy="400" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 19: الوجه السفلي -->
-                        <circle id="pin-bread" class="pin-all hidden" cx="500" cy="600" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" /> <!-- رف 11: الوجه العلوي -->
+                        <circle id="pin-eggs" class="pin-all hidden" cx="340" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-juice" class="pin-all hidden" cx="880" cy="740" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-fries" class="pin-all hidden" cx="940" cy="400" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-bread" class="pin-all hidden" cx="500" cy="600" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        
+                        <!-- دبوس الشبس -->
+                        <circle id="pin-chips" class="pin-all hidden" cx="340" cy="400" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
                     </svg>
 
                     <!-- موقع العربة الحالي -->
@@ -245,10 +251,14 @@
                 </div>
             </div>
 
-            <!-- أزرار التحكم -->
+            <!-- أزرار التحكم المُحدثة -->
             <div class="w-full flex gap-3 mt-4 justify-center">
                 <button id="btn-cancel-route" onclick="cancelRoute()" class="hidden flex-1 bg-brand-red hover:bg-brand-redHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95">
                     إلغاء المسار
+                </button>
+                <button onclick="openSearchModal()" class="flex-1 bg-white text-brand-blue border-2 border-brand-blue hover:bg-blue-50 py-3 rounded-lg font-bold text-xl shadow-lg transition-colors active:scale-95 flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-magnifying-glass text-3xl"></i>
+                    إضافة منتج
                 </button>
                 <button onclick="openVoiceModal()" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
                     <i class="ph-fill ph-microphone text-3xl"></i>
@@ -265,7 +275,7 @@
                 <i class="ph-bold ph-path text-sm"></i> التوجه للكل
             </button>
             
-            <!-- قائمة المنتجات (أضفت data-id لكل منتج للتعرف عليه برمجياً) -->
+            <!-- قائمة المنتجات -->
             <div id="cart-list" class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3 mt-1">
                 
                 <div class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative" data-id="eggs">
@@ -304,7 +314,7 @@
                     </div>
                 </div>
 
-                <!-- منتج الخبز (مخفي مبدئياً، يظهر عند إضافته من العروض) -->
+                <!-- منتج الخبز -->
                 <div id="cart-item-bread" class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex-col gap-2 relative hidden fade-in-card" data-id="bread">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=200&q=80" alt="خبز" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
@@ -317,12 +327,25 @@
                     </div>
                 </div>
 
+                <!-- منتج الشبس الجديد (مخفي حتى يتم إضافته) -->
+                <div id="cart-item-chips" class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex-col gap-2 relative hidden fade-in-card" data-id="chips">
+                    <div class="flex items-center gap-2">
+                        <img src="https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=150&q=80" alt="شبس" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
+                        <h3 class="font-bold text-[13px] leading-tight truncate flex-1">شبس ليز حار نار</h3>
+                    </div>
+                    <p class="font-black text-brand-blue text-sm px-1 text-center">6.50 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
+                    <div class="flex w-full gap-1.5 mt-1">
+                        <button onclick="drawRoute('chips')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="removeChips()" class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
     </main>
 
-    <!-- Modal التفاعل الصوتي (لم يتم التغيير عليه) -->
+    <!-- Modal التفاعل الصوتي -->
     <div id="voice-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <button onclick="closeVoiceModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
             <i class="ph ph-x text-4xl"></i>
@@ -361,6 +384,70 @@
         </div>
     </div>
 
+    <!-- Modal البحث والإضافة اليدوي -->
+    <div id="search-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <button onclick="closeSearchModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
+            <i class="ph ph-x text-4xl"></i>
+        </button>
+        <div class="bg-brand-card w-11/12 max-w-md rounded-2xl p-6 shadow-2xl flex flex-col gap-4 transform translate-y-4 transition-transform duration-300" id="search-modal-content">
+            <h2 class="text-2xl font-black text-brand-textMain flex items-center gap-2 mb-2">
+                <i class="ph-bold ph-magnifying-glass text-brand-blue"></i>
+                البحث عن منتج
+            </h2>
+            <div class="relative">
+                <input id="search-input" oninput="handleSearch(this.value)" type="text" placeholder="اكتب اسم المنتج هنا..." class="w-full bg-white border-2 border-gray-200 rounded-lg py-3 px-4 pl-10 pr-10 text-brand-textMain focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all font-bold">
+                <i class="ph-bold ph-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+            </div>
+            
+            <!-- نتائج وهمية / اقتراحات -->
+            <div class="flex flex-col gap-2 mt-3" id="search-results-container">
+                <p class="text-xs font-bold text-gray-400 mb-1">المنتجات الأكثر طلباً:</p>
+                <button class="default-search-result flex items-center justify-between bg-gray-50 hover:bg-blue-50 p-3 rounded-lg border border-gray-100 hover:border-brand-blue transition-colors text-right group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded flex items-center justify-center shadow-sm text-xl border border-gray-100">🍎</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-blue">تفاح أحمر طازج</span>
+                            <span class="font-black text-xs text-brand-blue">8.00 ريال/كج</span>
+                        </div>
+                    </div>
+                    <i class="ph-bold ph-plus text-brand-blue bg-blue-100 p-1.5 rounded-full"></i>
+                </button>
+                <button class="default-search-result flex items-center justify-between bg-gray-50 hover:bg-blue-50 p-3 rounded-lg border border-gray-100 hover:border-brand-blue transition-colors text-right group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded flex items-center justify-center shadow-sm text-xl border border-gray-100">💧</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-blue">مياه نوفا (كرتون)</span>
+                            <span class="font-black text-xs text-brand-blue">17.50 ريال</span>
+                        </div>
+                    </div>
+                    <i class="ph-bold ph-plus text-brand-blue bg-blue-100 p-1.5 rounded-full"></i>
+                </button>
+                <button class="default-search-result flex items-center justify-between bg-gray-50 hover:bg-blue-50 p-3 rounded-lg border border-gray-100 hover:border-brand-blue transition-colors text-right group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded flex items-center justify-center shadow-sm text-xl border border-gray-100">🧀</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-blue">جبن بوك كاسات</span>
+                            <span class="font-black text-xs text-brand-blue">22.00 ريال</span>
+                        </div>
+                    </div>
+                    <i class="ph-bold ph-plus text-brand-blue bg-blue-100 p-1.5 rounded-full"></i>
+                </button>
+
+                <!-- نتيجة الشبس (مخفية افتراضياً وتظهر عند البحث) -->
+                <button id="result-chips" onclick="addChipsToCart()" class="hidden items-center justify-between bg-brand-bg hover:bg-blue-50 p-3 rounded-lg border-2 border-brand-blue transition-colors text-right group shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white rounded flex items-center justify-center shadow-sm text-xl border border-gray-100">🥔</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-blue">شبس ليز حار نار</span>
+                            <span class="font-black text-xs text-brand-blue">6.50 ريال</span>
+                        </div>
+                    </div>
+                    <i class="ph-bold ph-plus text-white bg-brand-blue p-1.5 rounded-full shadow-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ملفات الجافاسكربت لإدارة التفاعل -->
     <script>
         let isAllRouteActive = false;
@@ -389,7 +476,7 @@
                 d += "L 830 500 "; 
             }
 
-            if (activeIds.includes('bread') || activeIds.includes('eggs')) {
+            if (activeIds.includes('bread') || activeIds.includes('eggs') || activeIds.includes('chips')) {
                 // إذا لم نكن في الممر الأوسط (بسبب عدم وجود منتجات في الجهة اليمنى)، اصعد له
                 if (!activeIds.includes('juice') && !activeIds.includes('fries')) {
                     d += "L 500 500 "; 
@@ -401,8 +488,16 @@
                     d += "L 500 600 L 500 500 "; // دخول رف الخبز والتراجع
                 }
 
-                if (activeIds.includes('eggs')) {
-                    d += "L 390 500 L 390 260 L 340 260 "; // العبور للممر الأيسر، الصعود، ودخول رف البيض
+                if (activeIds.includes('eggs') || activeIds.includes('chips')) {
+                    d += "L 390 500 "; // العبور للممر الأيسر
+
+                    if (activeIds.includes('chips')) {
+                        d += "L 390 400 L 340 400 L 390 400 "; // الصعود لرف الشبس ودخوله ثم التراجع
+                    }
+
+                    if (activeIds.includes('eggs')) {
+                        d += "L 390 260 L 340 260 L 390 260 "; // استكمال الصعود لرف البيض
+                    }
                 }
             }
 
@@ -532,6 +627,84 @@
             setTimeout(() => {
                 pulse.classList.remove('mic-ripple');
             }, 300);
+        }
+
+        // نافذة البحث والإضافة اليدوية
+        function openSearchModal() {
+            const modal = document.getElementById('search-modal');
+            const content = document.getElementById('search-modal-content');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                content.classList.remove('translate-y-4');
+                // التركيز التلقائي على حقل البحث
+                content.querySelector('input').focus();
+            }, 50);
+        }
+
+        function closeSearchModal() {
+            const modal = document.getElementById('search-modal');
+            const content = document.getElementById('search-modal-content');
+            
+            content.classList.add('translate-y-4');
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }, 150);
+        }
+
+        // معالجة البحث اللحظي
+        function handleSearch(val) {
+            const defaultResults = document.querySelectorAll('.default-search-result');
+            const chipsResult = document.getElementById('result-chips');
+
+            if (val.trim().includes('شبس') || val.trim().includes('شيبس') || val.trim().includes('ليز')) {
+                // إخفاء النتائج الافتراضية
+                defaultResults.forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+                // إظهار الشبس
+                chipsResult.classList.remove('hidden');
+                chipsResult.classList.add('flex');
+            } else {
+                // استعادة النتائج الافتراضية إذا كان الحقل فارغاً أو لا يطابق الشبس
+                defaultResults.forEach(el => { el.classList.remove('hidden'); el.classList.add('flex'); });
+                // إخفاء الشبس
+                chipsResult.classList.add('hidden');
+                chipsResult.classList.remove('flex');
+            }
+        }
+
+        // وظيفة إضافة الشبس من قائمة البحث
+        function addChipsToCart() {
+            closeSearchModal();
+            
+            // تصفير حقل البحث والنتائج
+            setTimeout(() => {
+                document.getElementById('search-input').value = '';
+                handleSearch('');
+            }, 300);
+
+            // إظهار المنتج في السلة
+            const cartItem = document.getElementById('cart-item-chips');
+            cartItem.classList.remove('hidden');
+            cartItem.classList.add('flex');
+
+            // تحديث المسار الشامل إذا كان مفعلاً
+            if(isAllRouteActive) {
+                setTimeout(() => {
+                    drawRoute('all');
+                }, 100);
+            }
+        }
+
+        // وظيفة إزالة الشبس
+        function removeChips() {
+            document.getElementById('cart-item-chips').classList.add('hidden');
+            document.getElementById('cart-item-chips').classList.remove('flex');
+            
+            if(isAllRouteActive) drawRoute('all');
+            else {
+                const chipsPath = document.getElementById('path-chips');
+                if(!chipsPath.classList.contains('hidden')) cancelRoute();
+            }
         }
 
         // تهيئة مبدئية لتحديث المسار الذكي
