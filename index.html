@@ -68,7 +68,6 @@
             animation-delay: 1s;
         }
 
-        /* أنيميشن ناعم لرسم المسار على الخريطة */
         .path-line {
             stroke-dasharray: 4000;
             stroke-dashoffset: 4000;
@@ -97,7 +96,6 @@
             width: 4px;
         }
 
-        /* أنيميشن بسيط عند إضافة منتج للسلة */
         .fade-in-card {
             animation: fadeIn 0.5s ease-out forwards;
         }
@@ -134,9 +132,19 @@
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-5 text-2xl text-brand-textMuted w-auto">
-            <i class="ph-fill ph-battery-full text-brand-textMain"></i>
-            <i class="ph-bold ph-wifi-high text-brand-textMain"></i>
+        <div class="flex items-center justify-end gap-5 w-auto text-brand-textMain">
+            <!-- تمت إضافة زر سلة التسوق هنا في اليسار -->
+            <button onclick="openFinalCartModal()" class="flex items-center gap-1.5 font-bold text-lg hover:text-brand-blue transition relative">
+                <i class="ph-bold ph-shopping-cart text-2xl"></i> سلة التسوق
+                <span id="cart-badge" class="absolute -top-2 -right-3 bg-brand-red text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border-2 border-brand-bg shadow-sm">0</span>
+            </button>
+            
+            <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
+
+            <div class="flex items-center gap-3 text-2xl">
+                <i class="ph-fill ph-battery-full"></i>
+                <i class="ph-bold ph-wifi-high"></i>
+            </div>
         </div>
     </header>
 
@@ -162,11 +170,11 @@
                         <span class="text-[#D97706] text-[9px] font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">خصم 20%</span>
                     </div>
                     <button class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
-                        <i class="ph-bold ph-shopping-cart text-sm"></i> أضف للسلة
+                        <i class="ph-bold ph-list-plus text-sm"></i> أضف للقائمة
                     </button>
                 </div>
 
-                <!-- عرض الخبز (قابل للإضافة للسلة) -->
+                <!-- عرض الخبز -->
                 <div id="offer-bread" class="bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex flex-col gap-2 relative transition-opacity duration-300">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=200&q=80" alt="خبز" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
@@ -178,9 +186,9 @@
                         </div>
                         <span class="text-[#D97706] text-[9px] font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">1+1 مجاناً</span>
                     </div>
-                    <!-- زر الإضافة -->
+                    <!-- زر الإضافة للقائمة -->
                     <button onclick="addBreadToCart()" class="w-full mt-1 bg-brand-green hover:bg-brand-greenHover text-white py-1.5 rounded-md text-xs font-bold transition-transform active:scale-95 shadow-sm flex justify-center items-center gap-1.5">
-                        <i class="ph-bold ph-shopping-cart text-sm"></i> أضف للسلة
+                        <i class="ph-bold ph-list-plus text-sm"></i> أضف للقائمة
                     </button>
                 </div>
             </div>
@@ -188,70 +196,62 @@
 
         <!-- الثلثين الأوسط: الخريطة (66%) -->
         <section class="w-[66%] bg-brand-panel rounded-xl p-5 flex flex-col relative shadow-inner">
-            <div class="flex-1 w-full bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-4">
-                <div class="relative w-full h-full">
+            <div class="flex-1 w-full bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-4 relative">
+                
+                <!-- طبقة الخريطة القابلة للتحريك والدوران (Google Maps Style) -->
+                <div id="map-layer" class="absolute inset-0 w-full h-full transition-all duration-[1500ms] ease-in-out origin-bottom">
                     <!-- رسم الأرفف -->
-                    <div class="w-full h-full flex flex-col">
+                    <div class="w-full h-full flex flex-col pointer-events-none">
                         <div class="h-[12%] w-full"></div>
                         <div class="flex justify-between h-[28%] w-full">
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">23</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">22</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">21</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">20</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">19</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">23</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">22</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">21</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">20</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">19</div>
                         </div>
                         <div class="h-[20%] relative w-full flex items-center justify-center">
-                            <hr class="absolute w-full border-gray-400 border-dashed z-0 opacity-40 border-[2px]">
+                            <hr class="absolute w-full border-gray-400 border-dashed opacity-40 border-[2px]">
                         </div>
                         <div class="flex justify-between h-[28%] w-full">
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">13</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">12</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">11</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">10</div>
-                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500 z-10">9</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">13</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">12</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">11</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">10</div>
+                            <div class="w-[12%] bg-[#E8DECE] rounded-md border border-[#CDBEAA] shadow-sm flex items-center justify-center font-black text-3xl text-gray-500">9</div>
                         </div>
                         <div class="h-[12%] w-full"></div>
                     </div>
 
                     <!-- طبقة الرسم (SVG Path) -->
-                    <!-- الأبعاد الهندسية:
-                         ممر يسار: x=170 | ممر وسط-يسار: x=390 | ممر وسط: x=500 | ممر يمين: x=830
-                         الرفوف: 22(يمين الرف=340) | 11(أعلى الرف=600) | 9(يسار الرف=880) | 19(أسفل الرف=400)
-                    -->
-                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                    <svg class="absolute inset-0 w-full h-full z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
                         
                         <!-- المسارات الفردية -->
-                        <path id="path-eggs" d="M 500 940 L 390 940 L 390 260 L 340 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        <path id="path-juice" d="M 500 940 L 830 940 L 830 740 L 880 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        <path id="path-fries" d="M 500 940 L 830 940 L 830 400 L 940 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        <path id="path-bread" d="M 500 940 L 500 600" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
+                        <path id="path-eggs" d="M 500 940 L 390 940 L 390 260 L 340 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-juice" d="M 500 940 L 830 940 L 830 740 L 880 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-fries" d="M 500 940 L 830 940 L 830 400 L 940 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-bread" d="M 500 940 L 500 600" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-chips" d="M 500 940 L 390 940 L 390 400 L 340 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-all" d="" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
                         
-                        <!-- مسار الشبس الجديد -->
-                        <path id="path-chips" d="M 500 940 L 390 940 L 390 400 L 340 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        
-                        <!-- المسار الذكي يتولد عبر الجافاسكربت -->
-                        <path id="path-all" d="" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden" />
-                        
-                        <!-- الدبابيس (المنتجات) تقع على أطراف الرفوف تماماً كما في الواقع -->
-                        <circle id="pin-eggs" class="pin-all hidden" cx="340" cy="260" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                        <circle id="pin-juice" class="pin-all hidden" cx="880" cy="740" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                        <circle id="pin-fries" class="pin-all hidden" cx="940" cy="400" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                        <circle id="pin-bread" class="pin-all hidden" cx="500" cy="600" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
-                        
-                        <!-- دبوس الشبس -->
-                        <circle id="pin-chips" class="pin-all hidden" cx="340" cy="400" r="16" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <!-- الدبابيس أصبحت قابلة للضغط -->
+                        <circle id="pin-eggs" onclick="drawRoute('eggs')" class="pin-all hidden cursor-pointer hover:stroke-brand-blue transition-all" cx="340" cy="260" r="20" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-juice" onclick="drawRoute('juice')" class="pin-all hidden cursor-pointer hover:stroke-brand-blue transition-all" cx="880" cy="740" r="20" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-fries" onclick="drawRoute('fries')" class="pin-all hidden cursor-pointer hover:stroke-brand-blue transition-all" cx="940" cy="400" r="20" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-bread" onclick="drawRoute('bread')" class="pin-all hidden cursor-pointer hover:stroke-brand-blue transition-all" cx="500" cy="600" r="20" fill="#ef4444" stroke="#fff" stroke-width="4" />
+                        <circle id="pin-chips" onclick="drawRoute('chips')" class="pin-all hidden cursor-pointer hover:stroke-brand-blue transition-all" cx="340" cy="400" r="20" fill="#ef4444" stroke="#fff" stroke-width="4" />
                     </svg>
+                </div>
 
-                    <!-- موقع العربة الحالي -->
-                    <div class="absolute bottom-[2%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center">
-                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
-                            <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
-                        </div>
+                <!-- موقع العربة الحالي (ثابت خارج حركة الخريطة ليبقى في مكانه) -->
+                <div class="absolute bottom-[2%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center pointer-events-none">
+                    <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
+                        <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
                     </div>
                 </div>
             </div>
 
-            <!-- أزرار التحكم المُحدثة -->
+            <!-- أزرار التحكم -->
             <div class="w-full flex gap-3 mt-4 justify-center">
                 <button id="btn-cancel-route" onclick="cancelRoute()" class="hidden flex-1 bg-brand-red hover:bg-brand-redHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95">
                     إلغاء المسار
@@ -269,7 +269,7 @@
 
         <!-- السدس الأيسر: السلة (17%) -->
         <aside class="w-[17%] bg-brand-panel rounded-xl p-4 flex flex-col shadow-inner h-full">
-            <h2 class="text-lg font-black text-center mb-3 text-gray-800">السلة الالكترونية</h2>
+            <h2 class="text-lg font-black text-center mb-3 text-gray-800">قائمة المقاضي</h2>
             
             <button onclick="drawRoute('all')" class="w-full bg-brand-blue hover:bg-brand-blueHover text-white py-2 rounded-md font-bold text-xs shadow-md transition-transform active:scale-95 mb-2 flex items-center justify-center gap-1.5">
                 <i class="ph-bold ph-path text-sm"></i> التوجه للكل
@@ -285,7 +285,7 @@
                     </div>
                     <p class="font-black text-brand-blue text-sm px-1 text-center">18.99 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('eggs')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('eggs')" class="action-btn flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-all active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
@@ -297,7 +297,7 @@
                     </div>
                     <p class="font-black text-brand-blue text-sm px-1 text-center">29.00 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('juice')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('juice')" class="action-btn flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-all active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
@@ -309,7 +309,7 @@
                     </div>
                     <p class="font-black text-brand-blue text-sm px-1 text-center">12.95 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('fries')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('fries')" class="action-btn flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-all active:scale-95">توجه</button>
                         <button class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
@@ -322,12 +322,12 @@
                     </div>
                     <p class="font-black text-brand-blue text-sm px-1 text-center">1.00 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('bread')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('bread')" class="action-btn flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-all active:scale-95">توجه</button>
                         <button onclick="removeBread()" class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
 
-                <!-- منتج الشبس الجديد (مخفي حتى يتم إضافته) -->
+                <!-- منتج الشبس الجديد -->
                 <div id="cart-item-chips" class="cart-item-card bg-brand-card rounded-lg p-2.5 shadow-sm border border-white/50 flex-col gap-2 relative hidden fade-in-card" data-id="chips">
                     <div class="flex items-center gap-2">
                         <img src="https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=150&q=80" alt="شبس" class="w-10 h-10 rounded-md border border-gray-100 object-cover mix-blend-multiply bg-white">
@@ -335,7 +335,7 @@
                     </div>
                     <p class="font-black text-brand-blue text-sm px-1 text-center">6.50 <span class="text-[9px] text-gray-500 font-bold">ريال</span></p>
                     <div class="flex w-full gap-1.5 mt-1">
-                        <button onclick="drawRoute('chips')" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-transform active:scale-95">توجه</button>
+                        <button onclick="drawRoute('chips')" class="action-btn flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-all active:scale-95">توجه</button>
                         <button onclick="removeChips()" class="flex-1 bg-white text-brand-red border border-brand-red hover:bg-brand-red hover:text-white py-1.5 rounded-md text-[11px] font-bold shadow-sm transition-colors active:scale-95">حذف</button>
                     </div>
                 </div>
@@ -345,7 +345,42 @@
 
     </main>
 
+    <!-- Modal سلة التسوق النهائية -->
+    <div id="final-cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <button onclick="closeFinalCartModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
+            <i class="ph ph-x text-4xl"></i>
+        </button>
+        <div class="bg-brand-card w-11/12 max-w-lg rounded-2xl p-6 shadow-2xl flex flex-col gap-4 transform translate-y-4 transition-transform duration-300" id="final-cart-content">
+            <h2 class="text-2xl font-black text-brand-textMain flex items-center justify-between border-b border-gray-200 pb-3">
+                <span class="flex items-center gap-2"><i class="ph-bold ph-shopping-cart text-brand-blue"></i> سلة التسوق الخاصة بك</span>
+                <span id="final-cart-count" class="text-sm bg-brand-blue text-white px-3 py-1 rounded-full">0 منتجات</span>
+            </h2>
+            
+            <div id="final-cart-items-container" class="flex flex-col gap-3 max-h-60 overflow-y-auto no-scrollbar py-2">
+                <!-- يتم تعبئة المنتجات هنا برمجياً -->
+                <p class="text-center text-gray-400 py-4" id="empty-cart-msg">السلة فارغة حالياً. قم بزيارة المنتجات وإضافتها!</p>
+            </div>
+
+            <div class="mt-2 border-t border-gray-200 pt-4 flex flex-col gap-4">
+                <div class="flex justify-between items-center px-2">
+                    <span class="font-bold text-gray-500">الإجمالي الشامل:</span>
+                    <span class="font-black text-2xl text-brand-blue" id="final-cart-total">0.00 <span class="text-sm text-gray-500">ريال</span></span>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button class="flex-1 bg-black text-white hover:bg-gray-800 py-3 rounded-lg font-bold text-lg shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2" onclick="alert('جاري التحويل لـ Apple Pay...')">
+                        <i class="ph-fill ph-apple-logo text-2xl"></i> Pay
+                    </button>
+                    <button class="flex-1 bg-[#1AB782] text-white hover:bg-[#159e70] py-3 rounded-lg font-bold text-lg shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2" onclick="alert('جاري التحويل لبطاقة مدى...')">
+                        <i class="ph-bold ph-credit-card text-2xl"></i> مدى
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal التفاعل الصوتي -->
+    <!-- ... (نفسه بدون تغيير) ... -->
     <div id="voice-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <button onclick="closeVoiceModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
             <i class="ph ph-x text-4xl"></i>
@@ -385,6 +420,7 @@
     </div>
 
     <!-- Modal البحث والإضافة اليدوي -->
+    <!-- ... (نفسه بدون تغيير) ... -->
     <div id="search-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <button onclick="closeSearchModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50">
             <i class="ph ph-x text-4xl"></i>
@@ -399,7 +435,6 @@
                 <i class="ph-bold ph-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
             </div>
             
-            <!-- نتائج وهمية / اقتراحات -->
             <div class="flex flex-col gap-2 mt-3" id="search-results-container">
                 <p class="text-xs font-bold text-gray-400 mb-1">المنتجات الأكثر طلباً:</p>
                 <button class="default-search-result flex items-center justify-between bg-gray-50 hover:bg-blue-50 p-3 rounded-lg border border-gray-100 hover:border-brand-blue transition-colors text-right group">
@@ -433,7 +468,6 @@
                     <i class="ph-bold ph-plus text-brand-blue bg-blue-100 p-1.5 rounded-full"></i>
                 </button>
 
-                <!-- نتيجة الشبس (مخفية افتراضياً وتظهر عند البحث) -->
                 <button id="result-chips" onclick="addChipsToCart()" class="hidden items-center justify-between bg-brand-bg hover:bg-blue-50 p-3 rounded-lg border-2 border-brand-blue transition-colors text-right group shadow-sm">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-white rounded flex items-center justify-center shadow-sm text-xl border border-gray-100">🥔</div>
@@ -448,66 +482,37 @@
         </div>
     </div>
 
-    <!-- ملفات الجافاسكربت لإدارة التفاعل -->
     <script>
         let isAllRouteActive = false;
+        let finalShoppingCart = []; // مصفوفة لتخزين المشتريات الفعلية
 
-        // دالة توليد المسار الذكي برمجياً بناءً على محتويات السلة
         function updateSmartPath() {
             const items = document.querySelectorAll('.cart-item-card:not(.hidden)');
             const activeIds = Array.from(items).map(el => el.dataset.id);
             
-            // البداية دائماً من موقع العربة (الممر السفلي وسط)
             let d = "M 500 940 "; 
-
-            // ترتيب منطقي لجمع الأغراض: العصير (يمين أسفل) -> البطاطس (يمين أعلى) -> الخبز (وسط أعلى) -> البيض (يسار أعلى)
             if (activeIds.includes('juice') || activeIds.includes('fries')) {
-                d += "L 830 940 "; // التوجه للممر الأيمن
-                
-                if (activeIds.includes('juice')) {
-                    d += "L 830 740 L 880 740 L 830 740 "; // دخول رف العصير والتراجع
-                }
-                
-                if (activeIds.includes('fries')) {
-                    d += "L 830 400 L 940 400 L 830 400 "; // الصعود ودخول رف البطاطس والتراجع
-                }
-                
-                // التراجع للتقاطع الأوسط للعبور إلى الجهة اليسرى
+                d += "L 830 940 ";
+                if (activeIds.includes('juice')) d += "L 830 740 L 880 740 L 830 740 ";
+                if (activeIds.includes('fries')) d += "L 830 400 L 940 400 L 830 400 ";
                 d += "L 830 500 "; 
             }
-
             if (activeIds.includes('bread') || activeIds.includes('eggs') || activeIds.includes('chips')) {
-                // إذا لم نكن في الممر الأوسط (بسبب عدم وجود منتجات في الجهة اليمنى)، اصعد له
-                if (!activeIds.includes('juice') && !activeIds.includes('fries')) {
-                    d += "L 500 500 "; 
-                } else {
-                    d += "L 500 500 "; // العبور للمنتصف
-                }
+                if (!activeIds.includes('juice') && !activeIds.includes('fries')) d += "L 500 500 "; 
+                else d += "L 500 500 ";
 
-                if (activeIds.includes('bread')) {
-                    d += "L 500 600 L 500 500 "; // دخول رف الخبز والتراجع
-                }
-
+                if (activeIds.includes('bread')) d += "L 500 600 L 500 500 ";
                 if (activeIds.includes('eggs') || activeIds.includes('chips')) {
-                    d += "L 390 500 "; // العبور للممر الأيسر
-
-                    if (activeIds.includes('chips')) {
-                        d += "L 390 400 L 340 400 L 390 400 "; // الصعود لرف الشبس ودخوله ثم التراجع
-                    }
-
-                    if (activeIds.includes('eggs')) {
-                        d += "L 390 260 L 340 260 L 390 260 "; // استكمال الصعود لرف البيض
-                    }
+                    d += "L 390 500 ";
+                    if (activeIds.includes('chips')) d += "L 390 400 L 340 400 L 390 400 ";
+                    if (activeIds.includes('eggs')) d += "L 390 260 L 340 260 L 390 260 ";
                 }
             }
-
-            // تطبيق المسار الذكي المولد على عنصر الـ SVG
             document.getElementById('path-all').setAttribute('d', d);
         }
 
-        // دالة رسم المسارات (فردية أو شاملة)
+        // دالة رسم المسار ومحاكاة التحرك (Google Maps Style)
         function drawRoute(routeId) {
-            // تحديث المسار الشامل قبل الرسم في حال تم إضافة/حذف منتجات
             if (routeId === 'all') {
                 updateSmartPath();
                 isAllRouteActive = true;
@@ -515,23 +520,22 @@
                 isAllRouteActive = false;
             }
 
-            // إخفاء كل المسارات والدبابيس أولاً
+            // إخفاء كل المسارات والدبابيس
             document.querySelectorAll('svg path').forEach(p => {
                 p.classList.add('hidden');
                 p.classList.remove('path-line'); 
             });
             document.querySelectorAll('svg circle').forEach(c => c.classList.add('hidden'));
 
-            // إظهار المسار المطلوب
+            // إظهار المسار
             const path = document.getElementById(`path-${routeId}`);
             if(path) {
                 path.classList.remove('hidden');
-                // إعادة تشغيل الأنيميشن
                 void path.offsetWidth; 
                 path.classList.add('path-line');
             }
 
-            // إظهار الدبابيس المرتبطة بالمسار
+            // إظهار الدبابيس
             if (routeId === 'all') {
                 const items = document.querySelectorAll('.cart-item-card:not(.hidden)');
                 items.forEach(item => {
@@ -544,6 +548,67 @@
             }
 
             document.getElementById('btn-cancel-route').classList.remove('hidden');
+
+            // --- محاكاة تحرك الخريطة (Google Maps Simulation) ---
+            const mapLayer = document.getElementById('map-layer');
+            // إحداثيات التحويل لتمركز نقطة الوصول أسفل المنتصف عند العربة
+            const transforms = {
+                'eggs': 'translate(20%, 50%) scale(1.6) rotate(15deg)',
+                'juice': 'translate(-35%, 15%) scale(1.6) rotate(-20deg)',
+                'fries': 'translate(-40%, 45%) scale(1.6) rotate(-15deg)',
+                'bread': 'translate(0%, 30%) scale(1.6) rotate(0deg)',
+                'chips': 'translate(20%, 40%) scale(1.6) rotate(10deg)',
+                'all': 'translate(0, 0) scale(1) rotate(0)' // العودة للمركز
+            };
+
+            if(mapLayer) {
+                mapLayer.style.transform = transforms[routeId] || transforms['all'];
+            }
+
+            // --- تحديث الأزرار عند "الوصول" (بعد 1.5 ثانية) ---
+            if (routeId !== 'all') {
+                setTimeout(() => {
+                    const card = document.querySelector(`.cart-item-card[data-id="${routeId}"]`);
+                    if(card) {
+                        const actionBtn = card.querySelector('.action-btn');
+                        if(actionBtn && actionBtn.innerText === 'توجه') {
+                            actionBtn.innerText = 'أضف للسلة';
+                            actionBtn.classList.remove('bg-brand-blue', 'hover:bg-brand-blueHover');
+                            actionBtn.classList.add('bg-brand-green', 'hover:bg-brand-greenHover');
+                            actionBtn.setAttribute('onclick', `addToFinalCart('${routeId}')`);
+                        }
+                    }
+                }, 1500); 
+            }
+        }
+
+        // إضافة المنتج فعلياً لسلة التسوق النهائية
+        function addToFinalCart(id) {
+            const card = document.querySelector(`.cart-item-card[data-id="${id}"]`);
+            if(!card) return;
+
+            const name = card.querySelector('h3').innerText;
+            const priceText = card.querySelector('p').innerText;
+            const price = parseFloat(priceText);
+            const img = card.querySelector('img').src;
+
+            // حفظ في المصفوفة
+            finalShoppingCart.push({ id, name, price, img });
+
+            // تغيير شكل الزر لـ "تمت الإضافة"
+            const actionBtn = card.querySelector('.action-btn');
+            actionBtn.innerText = 'تمت الإضافة ✓';
+            actionBtn.classList.remove('bg-brand-green', 'hover:bg-brand-greenHover');
+            actionBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            actionBtn.removeAttribute('onclick');
+
+            // تحديث الشارة (Badge) في الأعلى
+            const badge = document.getElementById('cart-badge');
+            badge.innerText = finalShoppingCart.length;
+            badge.classList.remove('hidden');
+
+            // تحديث محتوى نافذة السلة برمجياً
+            updateCartModalUI();
         }
 
         function cancelRoute() {
@@ -551,151 +616,72 @@
             document.querySelectorAll('svg path').forEach(p => p.classList.add('hidden'));
             document.querySelectorAll('svg circle').forEach(c => c.classList.add('hidden'));
             document.getElementById('btn-cancel-route').classList.add('hidden');
+            
+            // إعادة الخريطة لمكانها الطبيعي
+            const mapLayer = document.getElementById('map-layer');
+            if(mapLayer) mapLayer.style.transform = 'translate(0, 0) scale(1) rotate(0)';
         }
 
-        // وظيفة إضافة الخبز من العروض للسلة
         function addBreadToCart() {
-            // إخفاء كرت العرض بإفيكت
             const offerCard = document.getElementById('offer-bread');
             offerCard.classList.add('opacity-0');
-            setTimeout(() => {
-                offerCard.style.display = 'none';
-            }, 300);
+            setTimeout(() => { offerCard.style.display = 'none'; }, 300);
 
-            // إظهار المنتج في السلة
             const cartItem = document.getElementById('cart-item-bread');
             cartItem.classList.remove('hidden');
             cartItem.classList.add('flex');
 
-            // إذا كان المسار الشامل مفعل، قم بإعادة رسمه ليحتوي على الخبز فوراً!
             if(isAllRouteActive) {
-                setTimeout(() => {
-                    drawRoute('all');
-                }, 100); // تأخير بسيط لضمان تحديث الـ DOM
+                setTimeout(() => { drawRoute('all'); }, 100);
             }
         }
 
-        // وظيفة إزالة الخبز للعودة للحالة الأصلية (اختياري)
         function removeBread() {
             document.getElementById('cart-item-bread').classList.add('hidden');
             document.getElementById('cart-item-bread').classList.remove('flex');
             
             const offerCard = document.getElementById('offer-bread');
             offerCard.style.display = 'flex';
-            setTimeout(() => {
-                offerCard.classList.remove('opacity-0');
-            }, 10);
+            setTimeout(() => { offerCard.classList.remove('opacity-0'); }, 10);
 
             if(isAllRouteActive) drawRoute('all');
             else {
-                // إخفاء دبوس الخبز ومساره إذا كان مفعلا
                 const breadPath = document.getElementById('path-bread');
-                const breadPin = document.getElementById('pin-bread');
                 if(!breadPath.classList.contains('hidden')) cancelRoute();
             }
         }
 
-        // المساعد الصوتي
-        function openVoiceModal() {
-            const modal = document.getElementById('voice-modal');
-            const pulse = document.getElementById('mic-pulse');
-            const suggestions = document.getElementById('voice-suggestions');
-            
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            pulse.classList.add('mic-ripple');
-            
-            setTimeout(() => {
-                suggestions.classList.remove('opacity-0', 'translate-y-4');
-            }, 150);
-
-            setTimeout(() => {
-                if(!modal.classList.contains('pointer-events-none')) {
-                    closeVoiceModal();
-                    drawRoute('fries'); 
-                }
-            }, 6000);
-        }
-
-        function closeVoiceModal() {
-            const modal = document.getElementById('voice-modal');
-            const pulse = document.getElementById('mic-pulse');
-            const suggestions = document.getElementById('voice-suggestions');
-            
-            modal.classList.add('opacity-0', 'pointer-events-none');
-            suggestions.classList.add('opacity-0', 'translate-y-4');
-
-            setTimeout(() => {
-                pulse.classList.remove('mic-ripple');
-            }, 300);
-        }
-
-        // نافذة البحث والإضافة اليدوية
-        function openSearchModal() {
-            const modal = document.getElementById('search-modal');
-            const content = document.getElementById('search-modal-content');
-            
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                content.classList.remove('translate-y-4');
-                // التركيز التلقائي على حقل البحث
-                content.querySelector('input').focus();
-            }, 50);
-        }
-
-        function closeSearchModal() {
-            const modal = document.getElementById('search-modal');
-            const content = document.getElementById('search-modal-content');
-            
-            content.classList.add('translate-y-4');
-            setTimeout(() => {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-            }, 150);
-        }
-
-        // معالجة البحث اللحظي
         function handleSearch(val) {
             const defaultResults = document.querySelectorAll('.default-search-result');
             const chipsResult = document.getElementById('result-chips');
 
             if (val.trim().includes('شبس') || val.trim().includes('شيبس') || val.trim().includes('ليز')) {
-                // إخفاء النتائج الافتراضية
                 defaultResults.forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-                // إظهار الشبس
                 chipsResult.classList.remove('hidden');
                 chipsResult.classList.add('flex');
             } else {
-                // استعادة النتائج الافتراضية إذا كان الحقل فارغاً أو لا يطابق الشبس
                 defaultResults.forEach(el => { el.classList.remove('hidden'); el.classList.add('flex'); });
-                // إخفاء الشبس
                 chipsResult.classList.add('hidden');
                 chipsResult.classList.remove('flex');
             }
         }
 
-        // وظيفة إضافة الشبس من قائمة البحث
         function addChipsToCart() {
             closeSearchModal();
-            
-            // تصفير حقل البحث والنتائج
             setTimeout(() => {
                 document.getElementById('search-input').value = '';
                 handleSearch('');
             }, 300);
 
-            // إظهار المنتج في السلة
             const cartItem = document.getElementById('cart-item-chips');
             cartItem.classList.remove('hidden');
             cartItem.classList.add('flex');
 
-            // تحديث المسار الشامل إذا كان مفعلاً
             if(isAllRouteActive) {
-                setTimeout(() => {
-                    drawRoute('all');
-                }, 100);
+                setTimeout(() => { drawRoute('all'); }, 100);
             }
         }
 
-        // وظيفة إزالة الشبس
         function removeChips() {
             document.getElementById('cart-item-chips').classList.add('hidden');
             document.getElementById('cart-item-chips').classList.remove('flex');
@@ -707,7 +693,99 @@
             }
         }
 
-        // تهيئة مبدئية لتحديث المسار الذكي
+        // دوال النوافذ المنبثقة
+        function openVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const pulse = document.getElementById('mic-pulse');
+            const suggestions = document.getElementById('voice-suggestions');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            pulse.classList.add('mic-ripple');
+            setTimeout(() => { suggestions.classList.remove('opacity-0', 'translate-y-4'); }, 150);
+            setTimeout(() => {
+                if(!modal.classList.contains('pointer-events-none')) {
+                    closeVoiceModal();
+                    drawRoute('fries'); 
+                }
+            }, 6000);
+        }
+        function closeVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const pulse = document.getElementById('mic-pulse');
+            const suggestions = document.getElementById('voice-suggestions');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            suggestions.classList.add('opacity-0', 'translate-y-4');
+            setTimeout(() => { pulse.classList.remove('mic-ripple'); }, 300);
+        }
+        function openSearchModal() {
+            const modal = document.getElementById('search-modal');
+            const content = document.getElementById('search-modal-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                content.classList.remove('translate-y-4');
+                content.querySelector('input').focus();
+            }, 50);
+        }
+        function closeSearchModal() {
+            const modal = document.getElementById('search-modal');
+            const content = document.getElementById('search-modal-content');
+            content.classList.add('translate-y-4');
+            setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 150);
+        }
+
+        // وظائف سلة التسوق النهائية
+        function updateCartModalUI() {
+            const container = document.getElementById('final-cart-items-container');
+            const msg = document.getElementById('empty-cart-msg');
+            const totalEl = document.getElementById('final-cart-total');
+            const countEl = document.getElementById('final-cart-count');
+
+            countEl.innerText = `${finalShoppingCart.length} منتجات`;
+
+            if(finalShoppingCart.length === 0) {
+                container.innerHTML = '';
+                container.appendChild(msg);
+                msg.style.display = 'block';
+                totalEl.innerHTML = `0.00 <span class="text-sm text-gray-500">ريال</span>`;
+                return;
+            }
+
+            msg.style.display = 'none';
+            container.innerHTML = '';
+            let total = 0;
+
+            finalShoppingCart.forEach(item => {
+                total += item.price;
+                const itemHTML = `
+                    <div class="flex items-center justify-between bg-gray-50 p-2 rounded-lg border border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <img src="${item.img}" class="w-12 h-12 rounded bg-white object-cover border border-gray-200 mix-blend-multiply">
+                            <span class="font-bold text-sm text-brand-textMain">${item.name}</span>
+                        </div>
+                        <span class="font-black text-brand-blue">${item.price.toFixed(2)} <span class="text-[10px] text-gray-500">ريال</span></span>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+
+            totalEl.innerHTML = `${total.toFixed(2)} <span class="text-sm text-gray-500">ريال</span>`;
+        }
+
+        function openFinalCartModal() {
+            const modal = document.getElementById('final-cart-modal');
+            const content = document.getElementById('final-cart-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                content.classList.remove('translate-y-4');
+            }, 50);
+        }
+
+        function closeFinalCartModal() {
+            const modal = document.getElementById('final-cart-modal');
+            const content = document.getElementById('final-cart-content');
+            content.classList.add('translate-y-4');
+            setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 150);
+        }
+
         updateSmartPath();
     </script>
 </body>
