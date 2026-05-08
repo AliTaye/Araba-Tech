@@ -133,7 +133,14 @@
         </div>
 
         <div class="flex items-center justify-end gap-5 w-auto text-brand-textMain">
-            <!-- تمت إضافة زر سلة التسوق هنا في اليسار -->
+            <!-- زر البحث / إضافة منتج -->
+            <button onclick="openSearchModal()" class="flex items-center gap-1.5 font-bold text-lg hover:text-brand-blue transition">
+                <i class="ph-bold ph-magnifying-glass text-2xl"></i> إضافة منتج
+            </button>
+
+            <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
+
+            <!-- سلة التسوق -->
             <button onclick="openFinalCartModal()" class="flex items-center gap-1.5 font-bold text-lg hover:text-brand-blue transition relative">
                 <i class="ph-bold ph-shopping-cart text-2xl"></i> سلة التسوق
                 <span id="cart-badge" class="absolute -top-2 -right-3 bg-brand-red text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border-2 border-brand-bg shadow-sm">0</span>
@@ -249,21 +256,16 @@
                         <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
                     </div>
                 </div>
-            </div>
 
-            <!-- أزرار التحكم -->
-            <div class="w-full flex gap-3 mt-4 justify-center">
-                <button id="btn-cancel-route" onclick="cancelRoute()" class="hidden flex-1 bg-brand-red hover:bg-brand-redHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95">
-                    إلغاء المسار
-                </button>
-                <button onclick="openSearchModal()" class="flex-1 bg-white text-brand-blue border-2 border-brand-blue hover:bg-blue-50 py-3 rounded-lg font-bold text-xl shadow-lg transition-colors active:scale-95 flex items-center justify-center gap-2">
-                    <i class="ph-bold ph-magnifying-glass text-3xl"></i>
-                    إضافة منتج
-                </button>
-                <button onclick="openVoiceModal()" class="flex-1 bg-brand-blue hover:bg-brand-blueHover text-white py-3 rounded-lg font-bold text-xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
-                    <i class="ph-fill ph-microphone text-3xl"></i>
-                    تحدث للعربة
-                </button>
+                <!-- أزرار التحكم الطافية فوق الخريطة -->
+                <div class="absolute bottom-5 left-1/2 -translate-x-1/2 z-40 flex gap-3 items-center">
+                    <button id="btn-cancel-route" onclick="cancelRoute()" class="hidden bg-brand-red hover:bg-brand-redHover text-white px-6 py-2.5 rounded-full font-bold text-base shadow-2xl transition-transform active:scale-95 backdrop-blur-sm border border-white/20">
+                        إلغاء المسار
+                    </button>
+                    <button onclick="openVoiceModal()" class="w-16 h-16 bg-brand-blue hover:bg-brand-blueHover text-white rounded-full shadow-2xl transition-transform active:scale-95 flex items-center justify-center border-4 border-white/40 backdrop-blur-sm">
+                        <i class="ph-fill ph-microphone text-2xl"></i>
+                    </button>
+                </div>
             </div>
         </section>
 
