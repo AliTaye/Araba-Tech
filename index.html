@@ -105,7 +105,63 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col font-sans text-brand-textMain antialiased">
+<body class="h-screen w-screen flex flex-col font-sans text-brand-textMain antialiased relative">
+
+    <!-- شاشة تسجيل الدخول (تغطي التطبيق بالكامل) -->
+    <div id="login-overlay" class="absolute inset-0 bg-brand-bg z-[100] flex flex-col items-center justify-center p-5 transition-opacity duration-500">
+        <div class="bg-brand-card rounded-[2rem] shadow-2xl p-8 w-full max-w-md flex flex-col items-center relative overflow-hidden border border-white/60">
+            <!-- خلفيات تجميلية -->
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-brand-panel rounded-full opacity-50 blur-2xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-brand-panel rounded-full opacity-50 blur-2xl"></div>
+
+            <h1 class="text-4xl font-black text-brand-textMain mb-2 z-10 flex items-center gap-2">
+                عربـتِك 🛒🤎
+            </h1>
+            <p class="text-brand-textMuted text-sm mb-8 z-10 text-center font-bold">مرحباً بك في تجربة التسوق الذكية</p>
+
+            <!-- خطوة 1: رقم الجوال -->
+            <div id="login-step-phone" class="w-full flex flex-col gap-4 z-10 transition-all duration-300">
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-bold text-gray-600 px-1">رقم الجوال</label>
+                    <div class="relative flex items-center" dir="ltr">
+                        <span class="absolute left-4 text-gray-400 font-bold border-r-2 border-gray-200 pr-3">+966</span>
+                        <input type="tel" id="phone-input" placeholder="5X XXX XXXX" class="w-full bg-white border-2 border-gray-200 rounded-xl py-3 pl-20 pr-4 text-left font-black text-lg focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all shadow-sm" maxlength="9">
+                    </div>
+                </div>
+                <button onclick="sendOTP()" class="w-full bg-brand-blue hover:bg-brand-blueHover text-white py-3.5 rounded-xl font-bold text-lg shadow-md transition-transform active:scale-95 mt-2">
+                    دخول
+                </button>
+                <div class="relative flex items-center justify-center my-1">
+                    <hr class="w-full border-gray-200">
+                    <span class="absolute bg-brand-card px-3 text-xs text-gray-400 font-bold">أو</span>
+                </div>
+                <button onclick="continueAsGuest()" class="w-full bg-white text-brand-textMain border-2 border-gray-200 hover:bg-gray-50 py-3 rounded-xl font-bold shadow-sm transition-transform active:scale-95 flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-user text-xl"></i> المتابعة كضيف
+                </button>
+            </div>
+
+            <!-- خطوة 2: رمز التحقق (مخفية بالبداية) -->
+            <div id="login-step-otp" class="w-full flex flex-col gap-4 z-10 hidden opacity-0 transition-all duration-300">
+                <div class="flex flex-col items-center gap-1.5 mb-2">
+                    <p class="text-sm font-bold text-gray-600 text-center">أدخل الرمز المرسل إلى الجوال</p>
+                    <p id="display-phone-number" class="text-brand-blue font-black text-xl text-center tracking-wider" dir="ltr"></p>
+                </div>
+                <div class="flex justify-center gap-3" dir="ltr" id="otp-inputs-container">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 transition-all">
+                </div>
+                <p id="otp-error" class="text-brand-red text-xs font-bold text-center hidden">الرمز غير صحيح. (الرمز الوهمي هو 0000)</p>
+                <button onclick="verifyOTP()" class="w-full bg-brand-blue hover:bg-brand-blueHover text-white py-3.5 rounded-xl font-bold text-lg shadow-md transition-transform active:scale-95 mt-2">
+                    تأكيد الرمز
+                </button>
+                <button onclick="backToPhone()" class="w-full bg-transparent text-gray-500 hover:text-gray-800 py-2 rounded-xl font-bold transition-colors text-sm underline decoration-gray-300 underline-offset-4">
+                    تعديل رقم الجوال
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- الشريط العلوي (Top Bar) -->
     <header class="flex items-center justify-between px-8 py-4 relative">
@@ -118,11 +174,11 @@
                 <i class="ph-bold ph-sign-out text-2xl"></i> تسجيل الخروج
             </a>
             <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
-            <div class="flex items-center gap-2 bg-white/60 px-3 py-1.5 rounded-lg shadow-sm border border-white/50">
-                <div class="w-7 h-7 bg-brand-blue rounded-full flex items-center justify-center text-white">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-brand-blue rounded-full flex items-center justify-center text-white shadow-sm">
                     <i class="ph-fill ph-user text-sm"></i>
                 </div>
-                <span class="text-brand-textMain text-sm">أهلاً، مجدي</span>
+                <span id="user-name-display" class="font-bold">أهلاً، مجدي</span>
             </div>
         </nav>
 
@@ -145,13 +201,6 @@
                 <i class="ph-bold ph-shopping-cart text-2xl"></i> سلة التسوق
                 <span id="cart-badge" class="absolute -top-2 -right-3 bg-brand-red text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border-2 border-brand-bg shadow-sm">0</span>
             </button>
-            
-            <div class="w-px h-6 bg-brand-textMuted/30 mx-1"></div>
-
-            <div class="flex items-center gap-3 text-2xl">
-                <i class="ph-fill ph-battery-full"></i>
-                <i class="ph-bold ph-wifi-high"></i>
-            </div>
         </div>
     </header>
 
@@ -206,7 +255,7 @@
             <div class="flex-1 w-full bg-[#DFD4BF] rounded-xl border-2 border-[#D5C6AC] overflow-hidden shadow-inner p-4 relative">
                 
                 <!-- طبقة الخريطة القابلة للتحريك والدوران (Google Maps Style) -->
-                <div id="map-layer" class="absolute inset-0 w-full h-full transition-all duration-[1500ms] ease-in-out origin-bottom">
+                <div id="map-layer" class="absolute inset-0 w-full h-full transition-all duration-[1500ms] ease-in-out origin-center">
                     <!-- رسم الأرفف -->
                     <div class="w-full h-full flex flex-col pointer-events-none">
                         <div class="h-[12%] w-full"></div>
@@ -234,11 +283,11 @@
                     <svg class="absolute inset-0 w-full h-full z-20" viewBox="0 0 1000 1000" preserveAspectRatio="none">
                         
                         <!-- المسارات الفردية -->
-                        <path id="path-eggs" d="M 500 940 L 390 940 L 390 260 L 340 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
-                        <path id="path-juice" d="M 500 940 L 830 940 L 830 740 L 880 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
-                        <path id="path-fries" d="M 500 940 L 830 940 L 830 400 L 940 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
-                        <path id="path-bread" d="M 500 940 L 500 600" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
-                        <path id="path-chips" d="M 500 940 L 390 940 L 390 400 L 340 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-eggs" d="M 500 500 L 390 500 L 390 260 L 340 260" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-juice" d="M 500 500 L 830 500 L 830 740 L 880 740" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-fries" d="M 500 500 L 830 500 L 830 400 L 940 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-bread" d="M 500 500 L 500 600" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
+                        <path id="path-chips" d="M 500 500 L 390 500 L 390 400 L 340 400" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
                         <path id="path-all" d="" fill="none" stroke="#3b82f6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" class="hidden pointer-events-none" />
                         
                         <!-- الدبابيس أصبحت قابلة للضغط -->
@@ -251,7 +300,7 @@
                 </div>
 
                 <!-- موقع العربة الحالي (ثابت خارج حركة الخريطة ليبقى في مكانه) -->
-                <div class="absolute bottom-[2%] left-1/2 -translate-x-1/2 z-30 flex items-center justify-center pointer-events-none">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex items-center justify-center pointer-events-none">
                     <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.6)] border-[4px] border-brand-blue location-pulse relative">
                         <i class="ph-fill ph-navigation-arrow text-brand-blue text-3xl transform rotate-45 block"></i>
                     </div>
@@ -492,9 +541,9 @@
             const items = document.querySelectorAll('.cart-item-card:not(.hidden)');
             const activeIds = Array.from(items).map(el => el.dataset.id);
             
-            let d = "M 500 940 "; 
+            let d = "M 500 500 "; 
             if (activeIds.includes('juice') || activeIds.includes('fries')) {
-                d += "L 830 940 ";
+                d += "L 830 500 ";
                 if (activeIds.includes('juice')) d += "L 830 740 L 880 740 L 830 740 ";
                 if (activeIds.includes('fries')) d += "L 830 400 L 940 400 L 830 400 ";
                 d += "L 830 500 "; 
@@ -555,11 +604,11 @@
             const mapLayer = document.getElementById('map-layer');
             // إحداثيات التحويل لتمركز نقطة الوصول أسفل المنتصف عند العربة
             const transforms = {
-                'eggs': 'translate(20%, 50%) scale(1.6) rotate(15deg)',
-                'juice': 'translate(-35%, 15%) scale(1.6) rotate(-20deg)',
-                'fries': 'translate(-40%, 45%) scale(1.6) rotate(-15deg)',
-                'bread': 'translate(0%, 30%) scale(1.6) rotate(0deg)',
-                'chips': 'translate(20%, 40%) scale(1.6) rotate(10deg)',
+                'eggs': 'translate(0, 0) scale(1.4) rotate(15deg)',
+                'juice': 'translate(0, 0) scale(1.4) rotate(-20deg)',
+                'fries': 'translate(0, 0) scale(1.4) rotate(-15deg)',
+                'bread': 'translate(0, 0) scale(1.4) rotate(0deg)',
+                'chips': 'translate(0, 0) scale(1.4) rotate(10deg)',
                 'all': 'translate(0, 0) scale(1) rotate(0)' // العودة للمركز
             };
 
@@ -786,6 +835,100 @@
             const content = document.getElementById('final-cart-content');
             content.classList.add('translate-y-4');
             setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 150);
+        }
+
+        // --- وظائف شاشة تسجيل الدخول ---
+
+        // إعداد حركة الإدخال في حقول الـ OTP
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+                // تنفيذ التأكيد عند ضغط Enter في آخر حقل
+                if (e.key === 'Enter' && index === otpInputs.length - 1) {
+                    verifyOTP();
+                }
+            });
+        });
+
+        function sendOTP() {
+            const phone = document.getElementById('phone-input').value;
+            if (phone.length < 9) {
+                alert('الرجاء إدخال رقم جوال صحيح يتكون من 9 أرقام');
+                return;
+            }
+            
+            // عرض الرقم في الشاشة الثانية
+            document.getElementById('display-phone-number').innerText = '+966 ' + phone;
+            
+            const stepPhone = document.getElementById('login-step-phone');
+            const stepOtp = document.getElementById('login-step-otp');
+            
+            // إخفاء خطوة الجوال
+            stepPhone.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                stepPhone.classList.add('hidden');
+                // إظهار خطوة الرمز
+                stepOtp.classList.remove('hidden');
+                setTimeout(() => {
+                    stepOtp.classList.remove('opacity-0');
+                    // التركيز على أول حقل
+                    document.querySelectorAll('.otp-input')[0].focus();
+                }, 50);
+            }, 300);
+        }
+
+        function backToPhone() {
+            const stepPhone = document.getElementById('login-step-phone');
+            const stepOtp = document.getElementById('login-step-otp');
+            
+            stepOtp.classList.add('opacity-0');
+            setTimeout(() => {
+                stepOtp.classList.add('hidden');
+                stepPhone.classList.remove('hidden', 'pointer-events-none');
+                setTimeout(() => {
+                    stepPhone.classList.remove('opacity-0');
+                    document.getElementById('phone-input').focus();
+                }, 50);
+            }, 300);
+        }
+
+        function verifyOTP() {
+            let otp = '';
+            document.querySelectorAll('.otp-input').forEach(input => otp += input.value);
+            
+            if (otp === '0000') {
+                document.getElementById('otp-error').classList.add('hidden');
+                document.getElementById('user-name-display').innerText = 'أهلاً، عميلنا العزيز';
+                hideLoginOverlay();
+            } else {
+                document.getElementById('otp-error').classList.remove('hidden');
+                // اهتزاز للحقول للفت الانتباه
+                const container = document.getElementById('otp-inputs-container');
+                container.classList.add('translate-x-2');
+                setTimeout(() => container.classList.replace('translate-x-2', '-translate-x-2'), 100);
+                setTimeout(() => container.classList.replace('-translate-x-2', 'translate-x-0'), 200);
+            }
+        }
+
+        function continueAsGuest() {
+            document.getElementById('user-name-display').innerText = 'أهلاً، ضيف';
+            hideLoginOverlay();
+        }
+
+        function hideLoginOverlay() {
+            const overlay = document.getElementById('login-overlay');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 500); // يتوافق مع duration-500
         }
 
         updateSmartPath();
