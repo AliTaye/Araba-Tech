@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عربـتِك 🤎</title>
+    
+    <!-- خطوط عربية حديثة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            // Elegant Brown & Beige Palette
+                            primary: '#5C3A21',      // بني داكن وأنيق للأزرار والعناصر الأساسية
+                            primaryHover: '#4A2E1B',
+                            secondary: '#C2A878',    // بيج ذهبي للتنبيهات والعناصر الثانوية
+                            secondaryHover: '#B09565',
+                            // Neutrals
+                            bg: '#FDFBF7',           // بيج فاتح جداً لخلفية التطبيق
+                            panel: '#F4EFE6',        // بيج ناعم للقوائم الجانبية
+                            card: '#FFFFFF',         // أبيض نقي للبطاقات لإعطاء تباين جميل
+                            textMain: '#2C1E16',     // بني داكن مائل للسواد للنصوص الأساسية
+                            textMuted: '#8B7355'     // بني باهت للنصوص الثانوية
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #FDFBF7;
+            touch-action: none; 
+            overflow: hidden;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .mic-ripple::before, .mic-ripple::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background-color: rgba(92, 58, 33, 0.3); /* Brown Ripple */
+            z-index: -1;
+            animation: ripple 2s infinite cubic-bezier(0.0, 0.0, 0.2, 1);
+        }
+        .mic-ripple::after {
+            animation-delay: 1s;
+        }
+
+        .path-line {
+            stroke-dasharray: 4000;
+            stroke-dashoffset: 4000;
+            animation: drawPath 3s ease-in-out forwards;
+        }
+        @keyframes drawPath {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .location-pulse {
+            animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 15px rgba(92, 58, 33, 0.5); }
+            50% { opacity: 0.8; transform: scale(1.1); box-shadow: 0 0 30px rgba(92, 58, 33, 0.8); }
+        }
+
+        @keyframes sound-wave {
+            0%, 100% { height: 8px; opacity: 0.5; }
+            50% { height: 32px; opacity: 1; }
+        }
+        .sound-bar {
+            animation: sound-wave 1s ease-in-out infinite;
+            border-radius: 9999px;
+            background-color: white;
+            width: 4px;
+        }
+
+        .fade-in-card {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes dissolve-away {
+            0%   { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.92); }
+        }
+
+        .card-dissolve-anim {
+            animation: dissolve-away 0.5s ease-out forwards;
+        }
+
+        @keyframes slideDownToast {
+            0%   { opacity: 0; transform: translate(-50%, -20px); }
+            10%, 90% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+        .toast-animate {
+            animation: slideDownToast 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        
+        /* Utility for the elegant brown border */
+        .brand-border-top {
+            border-top: 4px solid #5C3A21;
+        }
+        
+        input:focus::placeholder { color: transparent; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col font-sans text-brand-textMain antialiased relative">
+
+    <!-- شاشة تسجيل الدخول (تغطي التطبيق بالكامل) -->
+    <div id="login-overlay" class="absolute inset-0 bg-brand-bg/95 backdrop-blur-sm z-[100] flex flex-col items-center justify-center p-5 transition-opacity duration-500">
+        <div class="bg-brand-card rounded-3xl shadow-2xl p-8 w-full max-w-md flex flex-col items-center relative overflow-hidden brand-border-top border border-gray-100">
+            <!-- خلفيات تجميلية -->
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-brand-primary rounded-full opacity-10 blur-2xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-brand-secondary rounded-full opacity-10 blur-2xl"></div>
+
+            <div class="z-10 bg-brand-primary text-white p-3 rounded-full mb-4 shadow-lg">
+                <i class="ph-fill ph-shopping-cart text-3xl"></i>
+            </div>
+            
+            <h1 class="text-3xl font-black text-brand-primary mb-1 z-10 flex items-center gap-2">
+                عربـتِك 🤎
+            </h1>
+            <p class="text-brand-textMuted text-sm mb-8 z-10 text-center font-bold">تسوق بذكاء، تسوق أسهل</p>
+
+            <!-- خطوة 1: رقم الجوال -->
+            <div id="login-step-phone" class="w-full flex flex-col gap-4 z-10 transition-all duration-300">
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-bold text-brand-textMuted px-1">رقم الجوال</label>
+                    <div class="relative flex items-center" dir="ltr">
+                        <span class="absolute left-4 text-brand-textMuted font-bold border-r-2 border-gray-200 pr-3">+966</span>
+                        <input type="tel" id="phone-input" placeholder="5X XXX XXXX" class="w-full bg-brand-panel border-2 border-transparent rounded-xl py-3 pl-20 pr-4 text-left font-black text-lg focus:outline-none focus:border-brand-primary focus:bg-white transition-all" maxlength="9">
+                    </div>
+                </div>
+                <button onclick="sendOTP()" class="w-full bg-brand-primary hover:bg-brand-primaryHover text-white py-3.5 rounded-xl font-bold text-lg shadow-md transition-transform active:scale-95 mt-2">
+                    تسجيل الدخول
+                </button>
+                <div class="relative flex items-center justify-center my-1">
+                    <hr class="w-full border-gray-200">
+                    <span class="absolute bg-brand-card px-3 text-xs text-brand-textMuted font-bold">أو</span>
+                </div>
+                <button onclick="continueAsGuest()" class="w-full bg-white text-brand-textMain border-2 border-gray-200 hover:border-brand-primary hover:text-brand-primary py-3 rounded-xl font-bold shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-user text-xl"></i> المتابعة كضيف
+                </button>
+            </div>
+
+            <!-- خطوة 2: رمز التحقق (مخفية بالبداية) -->
+            <div id="login-step-otp" class="w-full flex flex-col gap-4 z-10 hidden opacity-0 transition-all duration-300">
+                <div class="flex flex-col items-center gap-1.5 mb-2">
+                    <p class="text-sm font-bold text-brand-textMuted text-center">أدخل الرمز المرسل إلى الجوال</p>
+                    <p id="display-phone-number" class="text-brand-primary font-black text-xl text-center tracking-wider" dir="ltr"></p>
+                </div>
+                <div class="flex justify-center gap-3" dir="ltr" id="otp-inputs-container">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-brand-panel border-2 border-transparent rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white transition-all">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-brand-panel border-2 border-transparent rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white transition-all">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-brand-panel border-2 border-transparent rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white transition-all">
+                    <input type="text" maxlength="1" class="otp-input w-14 h-14 text-center text-2xl font-black bg-brand-panel border-2 border-transparent rounded-xl focus:outline-none focus:border-brand-primary focus:bg-white transition-all">
+                </div>
+                <p id="otp-error" class="text-brand-secondary text-xs font-bold text-center hidden">الرمز غير صحيح. (الرمز الوهمي هو 0000)</p>
+                <button onclick="verifyOTP()" class="w-full bg-brand-primary hover:bg-brand-primaryHover text-white py-3.5 rounded-xl font-bold text-lg shadow-md transition-transform active:scale-95 mt-2">
+                    تأكيد الرمز
+                </button>
+                <button onclick="backToPhone()" class="w-full bg-transparent text-brand-textMuted hover:text-brand-primary py-2 rounded-xl font-bold transition-colors text-sm underline underline-offset-4">
+                    تعديل رقم الجوال
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الشريط العلوي (Top Bar) -->
+    <header class="flex items-center justify-between px-6 py-4 bg-white shadow-sm relative z-20">
+
+        <div class="flex items-center justify-end gap-5 w-auto text-brand-textMain">
+            <!-- زر البحث -->
+            <button onclick="openSearchModal()" class="flex items-center justify-center w-10 h-10 rounded-full bg-brand-panel hover:bg-brand-primary hover:text-white transition-colors">
+                <i class="ph-bold ph-magnifying-glass text-xl"></i>
+            </button>
+
+            <!-- إدفع -->
+            <button onclick="openFinalCartModal()" class="flex items-center gap-2 bg-brand-secondary hover:bg-brand-secondaryHover text-white px-4 py-2 rounded-lg font-bold shadow-sm transition-transform active:scale-95 relative">
+                <i class="ph-bold ph-shopping-cart text-xl"></i> السلة
+                <span id="cart-badge" class="absolute -top-2 -right-2 bg-brand-primary text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border-2 border-white shadow-sm">0</span>
+            </button>
+        </div>
+
+        <!-- الشعار في المنتصف -->
+        <div class="absolute left-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
+            <div class="font-black text-2xl tracking-wide flex items-center gap-2 text-brand-primary">
+                 عربـتِك <i class="ph-fill ph-shopping-cart"></i>
+            </div>
+            <span class="text-[10px] font-bold text-brand-textMuted bg-brand-panel px-2 py-0.5 rounded-full mt-0.5">الفرع الرئيسي</span>
+        </div>
+
+        <nav class="flex items-center gap-4 text-brand-textMuted font-bold w-auto">
+            <button class="w-10 h-10 rounded-full bg-brand-panel hover:bg-brand-primary hover:text-white transition-colors flex items-center justify-center">
+                <i class="ph-fill ph-gear text-xl"></i>
+            </button>
+            <div class="flex items-center gap-2 bg-brand-panel px-3 py-1.5 rounded-lg border border-gray-100">
+                <div class="w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center text-white text-xs">
+                    <i class="ph-bold ph-user"></i>
+                </div>
+                <span id="user-name-display" class="text-sm text-brand-textMain">زائر</span>
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-1 flex gap-4 px-4 pb-4 pt-4 overflow-hidden w-full bg-brand-bg relative z-10">
+        
+        <!-- القسم الأيمن: السلة (20%) -->
+        <aside class="w-[20%] bg-white rounded-2xl p-4 flex flex-col shadow-sm border border-gray-100 h-full relative overflow-hidden brand-border-top">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-black text-brand-textMain">قائمة التسوق</h2>
+                <span class="bg-brand-panel text-brand-primary text-xs font-bold px-2 py-1 rounded-md" id="list-count">0 عناصر</span>
+            </div>
+            
+            <button id="btn-go-all" onclick="navigateToAll('all')" class="w-full bg-brand-primary hover:bg-brand-primaryHover text-white py-2.5 rounded-lg font-bold text-sm shadow-sm transition-transform active:scale-95 mb-4 flex items-center justify-center gap-2">
+                <i id="icon-go-all" class="ph-bold ph-path pointer-events-none"></i> 
+                <span id="text-go-all" class="pointer-events-none">جمع الكل تلقائياً</span>
+            </button>
+            
+            <!-- قائمة المنتجات -->
+            <div id="shopping-list-container" class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-3">
+
+                <div id="active-queue-partition" class="flex flex-col gap-3"></div>
+                
+                <div id="list-separator" class="w-full h-px bg-gray-200 my-2 hidden shrink-0 relative transition-all duration-300">
+                    <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-xs font-bold text-brand-textMuted">المتبقي</span>
+                </div>
+                
+                <div id="inactive-list-partition" class="flex flex-col gap-3"></div>
+
+                <!-- منتج الخبز المخفي المبدئي -->
+                <div id="cart-item-bread" class="cart-item-card bg-brand-card rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col gap-2 relative hidden fade-in-card" data-id="bread">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-brand-panel flex items-center justify-center border border-gray-200 overflow-hidden shrink-0">
+                            <span class="text-2xl">🥖</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-sm leading-tight truncate text-brand-textMain">خبز صامولي</h3>
+                            <p class="font-black text-brand-primary text-sm mt-0.5">1.00 <span class="text-[10px] text-brand-textMuted font-bold">ريال</span></p>
+                        </div>
+                    </div>
+                    <div class="flex w-full gap-2 mt-1">
+                        <button onclick="drawRoute('bread')" class="action-btn flex-[2] bg-brand-primary hover:bg-brand-primaryHover text-white py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm">توجه إليه</button>
+                        <button onclick="removeBread()" class="flex-1 bg-white text-brand-secondary border border-brand-secondary hover:bg-brand-secondary hover:text-white py-1.5 rounded-lg text-xs font-bold transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+
+                <!-- منتج الشبس المخفي المبدئي -->
+                <div id="cart-item-chips" class="cart-item-card bg-brand-card rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col gap-2 relative hidden fade-in-card" data-id="chips">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-lg bg-brand-panel flex items-center justify-center border border-gray-200 overflow-hidden shrink-0">
+                            <span class="text-2xl">🥔</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-sm leading-tight truncate text-brand-textMain">شبس ليز حار نار</h3>
+                            <p class="font-black text-brand-primary text-sm mt-0.5">6.50 <span class="text-[10px] text-brand-textMuted font-bold">ريال</span></p>
+                        </div>
+                    </div>
+                    <div class="flex w-full gap-2 mt-1">
+                        <button onclick="drawRoute('chips')" class="action-btn flex-[2] bg-brand-primary hover:bg-brand-primaryHover text-white py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm">توجه إليه</button>
+                        <button onclick="removeChips()" class="flex-1 bg-white text-brand-secondary border border-brand-secondary hover:bg-brand-secondary hover:text-white py-1.5 rounded-lg text-xs font-bold transition-colors active:scale-95">حذف</button>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+        
+        <!-- القسم الأوسط: كاميرا المحاكي / الخريطة (60%) -->
+        <section class="w-[60%] bg-white rounded-2xl p-2 flex flex-col relative shadow-sm border border-gray-100">
+            <div class="flex-1 w-full bg-gray-900 rounded-xl overflow-hidden relative flex items-center justify-center group ring-1 ring-black/5">
+                
+                <canvas id="live-camera-feed" class="w-full h-full object-cover transition-transform duration-1000 ease-out"></canvas>
+
+                <!-- Overlay Gradient for better UI visibility -->
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent pointer-events-none"></div>
+
+                <!-- Arrival Toast -->
+                <div id="arrival-toast" class="absolute top-6 left-1/2 -translate-x-1/2 z-50 bg-brand-primary text-white px-6 py-3 rounded-full shadow-lg font-bold flex items-center gap-2 opacity-0 pointer-events-none border border-white/20 hidden">
+                    <i class="ph-bold ph-check-circle text-xl text-white"></i>
+                    <span id="arrival-toast-text">تم الوصول بنجاح</span>
+                </div>
+
+                <!-- صندوق الترانسكربت (المحاكاة الصوتية) -->
+                <div id="transcript-box" class="absolute bottom-24 left-4 right-4 bg-gray-900/80 backdrop-blur-md border border-gray-700 rounded-2xl p-4 text-white text-center text-lg font-bold shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center justify-center z-40">
+                    <p id="transcript-text" class="w-full break-words leading-relaxed" dir="auto"></p>
+                </div>
+
+                <!-- أزرار التحكم السفلية -->
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 flex gap-4 items-center">
+                    <!-- Cancel Route -->
+                    <button id="btn-cancel-route-center" onclick="cancelGlobalRoute()" class="hidden bg-brand-secondary hover:bg-brand-secondaryHover text-white px-5 py-3 rounded-full font-bold shadow-lg transition-all active:scale-95 items-center gap-2 border border-white/10">
+                        <i class="ph-bold ph-stop-circle text-xl"></i>
+                        إيقاف العربة
+                    </button>
+                    <!-- Mic Button -->
+                    <button id="mic-btn" class="w-16 h-16 bg-brand-primary hover:bg-brand-primaryHover text-white rounded-full shadow-lg transition-transform duration-300 active:scale-95 flex items-center justify-center border-4 border-white">
+                        <i class="ph-fill ph-microphone text-2xl z-10"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- القسم الأيسر: العروض والمقترحات (20%) -->
+        <aside class="w-[20%] bg-white rounded-2xl p-4 flex flex-col shadow-sm border border-gray-100 h-full overflow-hidden brand-border-top">
+            <div class="flex items-center justify-between mb-4">
+                 <h2 class="text-lg font-black text-brand-textMain flex items-center gap-1.5"><i class="ph-fill ph-tag text-brand-secondary"></i> عروض عربـتِك</h2>
+            </div>
+
+            <div class="flex-1 overflow-y-auto no-scrollbar flex flex-col gap-4">
+                
+                <!-- عرض الحليب -->
+                <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col gap-2 relative hover:border-brand-primary transition-colors">
+                    <div class="absolute top-2 left-2 bg-brand-secondary text-white text-[10px] font-bold px-1.5 py-0.5 rounded">وفر 20%</div>
+                    <div class="flex flex-col items-center gap-2 mt-2">
+                        <div class="w-16 h-16 bg-brand-panel rounded-lg flex items-center justify-center border border-gray-100">
+                             <span class="text-3xl">🥛</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-center text-brand-textMain">كرتون حليب المراعي كامل الدسم</h3>
+                    </div>
+                    <div class="flex items-end justify-between px-1 mt-2 border-t border-gray-50 pt-2">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-brand-textMuted line-through leading-none">60.00 ريال</span>
+                            <span class="text-lg font-black text-brand-secondary leading-none mt-1">48.00 <span class="text-[10px]">ريال</span></span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-2 bg-brand-panel text-brand-primary hover:bg-brand-primary hover:text-white py-2 rounded-lg text-xs font-bold transition-all active:scale-95 flex justify-center items-center gap-1.5">
+                        <i class="ph-bold ph-plus"></i> أضف للقائمة
+                    </button>
+                </div>
+
+                <!-- عرض الخبز -->
+                <div id="offer-bread" class="bg-white rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col gap-2 relative hover:border-brand-primary transition-colors duration-300">
+                    <div class="absolute top-2 left-2 bg-[#F59E0B] text-white text-[10px] font-bold px-1.5 py-0.5 rounded">1+1 مجاناً</div>
+                    <div class="flex flex-col items-center gap-2 mt-2">
+                        <div class="w-16 h-16 bg-brand-panel rounded-lg flex items-center justify-center border border-gray-100">
+                             <span class="text-3xl">🥖</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-center text-brand-textMain">خبز صامولي أبيض طازج</h3>
+                    </div>
+                    <div class="flex items-end justify-between px-1 mt-2 border-t border-gray-50 pt-2">
+                        <div class="flex flex-col">
+                            <span class="text-lg font-black text-brand-primary leading-none">1.00 <span class="text-[10px]">ريال</span></span>
+                        </div>
+                    </div>
+                    <button onclick="addBreadToCart()" class="w-full mt-2 bg-brand-panel text-brand-primary hover:bg-brand-primary hover:text-white py-2 rounded-lg text-xs font-bold transition-all active:scale-95 flex justify-center items-center gap-1.5">
+                        <i class="ph-bold ph-plus"></i> أضف للقائمة
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Modal سلة التسوق النهائية -->
+    <div id="final-cart-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <button onclick="closeFinalCartModal()" class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors flex items-center justify-center z-50">
+            <i class="ph-bold ph-x text-2xl"></i>
+        </button>
+        <div class="bg-white w-11/12 max-w-lg rounded-3xl p-6 shadow-2xl flex flex-col gap-4 transform translate-y-8 transition-transform duration-300 brand-border-top" id="final-cart-content">
+            <h2 class="text-2xl font-black text-brand-textMain flex items-center justify-between border-b border-gray-100 pb-4">
+                <span class="flex items-center gap-2"><i class="ph-fill ph-shopping-cart text-brand-primary text-3xl"></i> السلة الحالية</span>
+                <span id="final-cart-count" class="text-xs bg-brand-panel text-brand-primary font-bold px-3 py-1.5 rounded-md border border-gray-200">0 منتجات</span>
+            </h2>
+            
+            <div id="final-cart-items-container" class="flex flex-col gap-3 max-h-72 overflow-y-auto no-scrollbar py-2">
+                <div class="flex flex-col items-center justify-center py-8 text-brand-textMuted" id="empty-cart-msg">
+                    <i class="ph-light ph-shopping-cart text-6xl mb-2 text-gray-300"></i>
+                    <p>السلة فارغة حالياً. قم بإضافة المنتجات!</p>
+                </div>
+            </div>
+
+            <div class="mt-2 border-t border-gray-100 pt-4 flex flex-col gap-4 bg-brand-bg -mx-6 -mb-6 p-6 rounded-b-3xl">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                    <span class="font-bold text-brand-textMain text-lg">الإجمالي:</span>
+                    <span class="font-black text-3xl text-brand-primary" id="final-cart-total">0.00 <span class="text-sm text-brand-textMuted">ريال</span></span>
+                </div>
+                
+                <div class="flex gap-3 mt-2">
+                    <button class="flex-[2] bg-brand-primary text-white hover:bg-brand-primaryHover py-3.5 rounded-xl font-bold text-lg shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2" onclick="alert('الانتقال للدفع عبر التطبيق...')">
+                        إتمام الطلب <i class="ph-bold ph-arrow-left"></i>
+                    </button>
+                    <button class="flex-1 bg-black text-white hover:bg-gray-800 py-3.5 rounded-xl font-bold text-lg shadow-md transition-transform active:scale-95 flex items-center justify-center" onclick="alert('جاري التحويل لـ Apple Pay...')">
+                        <i class="ph-fill ph-apple-logo text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal التفاعل الصوتي (من الكود القديم بتصميم كيو) -->
+    <div id="voice-modal" class="fixed inset-0 bg-gray-900/90 backdrop-blur-md z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500">
+        <button onclick="closeVoiceModal()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors cursor-pointer z-50 bg-white/10 p-2 rounded-full">
+            <i class="ph-bold ph-x text-2xl"></i>
+        </button>
+        <div class="relative flex items-center justify-center w-72 h-72 mb-6">
+            <div class="absolute inset-4 rounded-full border-[2px] border-dashed border-white/20 animate-[spin_20s_linear_infinite] pointer-events-none"></div>
+            <div class="absolute inset-10 rounded-full border border-white/10 animate-[spin_10s_reverse_infinite] pointer-events-none"></div>
+            <div id="mic-pulse" class="absolute inset-0 rounded-full"></div>
+            <button onclick="closeVoiceModal()" class="relative w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(11,138,158,0.4)] z-10 cursor-pointer hover:scale-105 transition-transform duration-300 group">
+                <i class="ph-fill ph-microphone text-6xl text-brand-primary group-hover:scale-110 transition-transform"></i>
+            </button>
+        </div>
+        <h2 class="text-white text-5xl font-black drop-shadow-lg mb-8 tracking-tight">أنا أستمع...</h2>
+        <div class="flex items-center justify-center gap-2.5 mb-14 h-12 bg-white/5 px-6 py-3 rounded-full border border-white/10 backdrop-blur-sm">
+            <div class="sound-bar" style="animation-delay: 0.0s"></div>
+            <div class="sound-bar" style="animation-delay: 0.2s"></div>
+            <div class="sound-bar" style="animation-delay: 0.4s"></div>
+            <div class="sound-bar" style="animation-delay: 0.1s"></div>
+            <div class="sound-bar" style="animation-delay: 0.3s"></div>
+        </div>
+        <div class="flex flex-col items-center opacity-0 transform translate-y-8 transition-all duration-700 delay-300" id="voice-suggestions">
+            <p class="text-brand-secondary text-sm mb-5 font-bold tracking-wider uppercase">يمكنك أن تسألني</p>
+            <div class="flex items-center gap-4 flex-wrap justify-center max-w-2xl">
+                <button class="flex items-center gap-2.5 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-2xl hover:bg-white/20 hover:border-brand-secondary transition-all text-[15px] font-bold cursor-pointer shadow-sm hover:-translate-y-1">
+                    <i class="ph-duotone ph-map-pin text-2xl text-brand-secondary"></i>
+                    "أين أجد الحليب؟"
+                </button>
+                <button class="flex items-center gap-2.5 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-2xl hover:bg-white/20 hover:border-brand-secondary transition-all text-[15px] font-bold cursor-pointer shadow-sm hover:-translate-y-1">
+                    <i class="ph-duotone ph-shopping-cart-plus text-2xl text-brand-secondary"></i>
+                    "أضف تفاح إلى السلة"
+                </button>
+                <button class="flex items-center gap-2.5 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-2xl hover:bg-white/20 hover:border-brand-secondary transition-all text-[15px] font-bold cursor-pointer shadow-sm hover:-translate-y-1">
+                    <i class="ph-duotone ph-receipt text-2xl text-brand-secondary"></i>
+                    "كم إجمالي الفاتورة؟"
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal البحث والإضافة اليدوي -->
+    <div id="search-modal" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <button onclick="closeSearchModal()" class="absolute top-6 right-6 w-12 h-12 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors flex items-center justify-center z-50">
+            <i class="ph-bold ph-x text-2xl"></i>
+        </button>
+        <div class="bg-white w-11/12 max-w-md rounded-3xl p-6 shadow-2xl flex flex-col gap-4 transform translate-y-8 transition-transform duration-300 brand-border-top" id="search-modal-content">
+            <h2 class="text-2xl font-black text-brand-textMain flex items-center gap-2 mb-2">
+                <i class="ph-bold ph-magnifying-glass text-brand-primary"></i>
+                ابحث في المنتجات
+            </h2>
+            <div class="relative mt-2">
+                <input id="search-input" oninput="handleSearch(this.value)" type="text" placeholder="اكتب اسم المنتج..." class="w-full bg-brand-panel border-2 border-transparent rounded-xl py-3 px-4 pl-12 pr-12 text-brand-textMain focus:outline-none focus:border-brand-primary focus:bg-white transition-all font-bold text-lg placeholder:text-gray-400">
+                <i class="ph-bold ph-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-brand-textMuted text-xl"></i>
+            </div>
+            
+            <div class="flex flex-col gap-2 mt-2 max-h-72 overflow-y-auto no-scrollbar pr-1" id="search-results-container">
+                <p class="text-xs font-bold text-brand-textMuted mb-2 px-1">مقترحات لك:</p>
+                
+                <button class="default-search-result flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 hover:border-brand-primary transition-colors text-right group shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-brand-panel rounded-lg flex items-center justify-center text-2xl border border-gray-50 group-hover:scale-110 transition-transform">🍎</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-primary transition-colors">تفاح أحمر طازج</span>
+                            <span class="font-black text-xs text-brand-secondary mt-0.5">8.00 ريال/كج</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-brand-panel flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors">
+                        <i class="ph-bold ph-plus"></i>
+                    </div>
+                </button>
+
+                <button class="default-search-result flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 hover:border-brand-primary transition-colors text-right group shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-brand-panel rounded-lg flex items-center justify-center text-2xl border border-gray-50 group-hover:scale-110 transition-transform">💧</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-primary transition-colors">مياه نوفا (كرتون)</span>
+                            <span class="font-black text-xs text-brand-secondary mt-0.5">17.50 ريال</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-brand-panel flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors">
+                        <i class="ph-bold ph-plus"></i>
+                    </div>
+                </button>
+
+                <button class="default-search-result flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 hover:border-brand-primary transition-colors text-right group shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-brand-panel rounded-lg flex items-center justify-center text-2xl border border-gray-50 group-hover:scale-110 transition-transform">🧀</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-textMain group-hover:text-brand-primary transition-colors">جبن بوك كاسات</span>
+                            <span class="font-black text-xs text-brand-secondary mt-0.5">22.00 ريال</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-brand-panel flex items-center justify-center text-brand-primary group-hover:bg-brand-primary group-hover:text-white transition-colors">
+                        <i class="ph-bold ph-plus"></i>
+                    </div>
+                </button>
+
+                <button id="result-chips" onclick="addChipsToCart()" class="hidden items-center justify-between bg-brand-primary/5 p-3 rounded-xl border border-brand-primary text-right group shadow-sm transition-all">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-2xl shadow-sm border border-brand-primary/20 group-hover:scale-110 transition-transform">🥔</div>
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-brand-primary">شبس ليز حار نار</span>
+                            <span class="font-black text-xs text-brand-secondary mt-0.5">6.50 ريال</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-brand-primary text-white flex items-center justify-center shadow-md">
+                        <i class="ph-bold ph-plus"></i>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- سكريبتات الجافاسكريبت والاتصال الخاص بك لم تتغير وظيفيا -->
+    <script>
+        // Connect to the Python WebSocket hub
+        const ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        ws.binaryType = "blob";
+
+        const canvas = document.getElementById('live-camera-feed');
+        const ctx = canvas.getContext('2d');
+        let isRendering = false;
+
+        ws.onopen = () => {
+            console.log("Connected to Python Hub for Live Video!");
+            ws.send("ready");
+        };
+
+        ws.onmessage = async (event) => {
+            if (typeof event.data === "string") {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.action === "ITEM_COLLECTED" && data.item_name) {
+                        const itemName = data.item_name;
+                        const toast = document.getElementById('arrival-toast');
+                        const toastText = document.getElementById('arrival-toast-text');
+                        if (toast && toastText) {
+                            toastText.innerText = `تم الوصول إلى "${itemName}"`;
+                            toast.classList.remove('hidden');
+                            toast.classList.remove('toast-animate');
+                            void toast.offsetWidth; 
+                            toast.classList.add('toast-animate');
+                            setTimeout(() => {
+                                toast.classList.remove('toast-animate');
+                                toast.classList.add('hidden');
+                            }, 4000);
+                        }
+
+                        const card = document.querySelector(`.cart-item-card[data-id="${CSS.escape(itemName)}"]`);
+                        if (card && !collectingAnimations.has(itemName)) {
+                            collectingAnimations.add(itemName);
+                            card.style.height = card.offsetHeight + 'px';
+                            card.style.pointerEvents = 'none';
+                            
+                            // Updated checkmark style for the collected animation (Q Style Teal)
+                            card.innerHTML = `
+                                <div class="absolute inset-0 bg-brand-primary rounded-xl flex items-center justify-center z-20 shadow-inner">
+                                    <i class="ph-fill ph-check-circle text-white text-5xl drop-shadow-lg animate-bounce"></i>
+                                </div>
+                            `;
+                            setTimeout(() => {
+                                card.classList.add('card-dissolve-anim');
+                                setTimeout(() => {
+                                    if (card.parentElement) {
+                                        card.remove();
+                                        collectingAnimations.delete(itemName);
+                                        updateListCount(); // Update counter
+                                    }
+                                }, 500); 
+                            }, 1200);
+                        }
+                        return;
+                    }
+                    if (data.action === "SYNC_UI_STATE" && data.current_list) {
+                        renderStateDrivenCards(data.current_list);
+                    }
+                    if (data.action === "VOICE_COMMAND_WAYPOINTS" && data.waypoints) {
+                        drawShoppingCards(data.waypoints);
+                    }
+                    if (data.action === "VOICE_TRANSCRIPT" && data.text) {
+                        const transcriptBox = document.getElementById('transcript-box');
+                        const transcriptText = document.getElementById('transcript-text');
+                        if (transcriptBox && transcriptText) {
+                            transcriptText.textContent = data.text;
+                            transcriptBox.classList.remove('opacity-0', 'pointer-events-none');
+                        }
+                        setTimeout(() => {
+                            if (transcriptBox) {
+                                transcriptBox.classList.add('opacity-0', 'pointer-events-none');
+                            }
+                        }, 5000);
+                        return;
+                    }
+                    if (data.action === "WAKE_WORD_DETECTED") {
+                        const micBtn = document.getElementById('mic-btn');
+                        if (micBtn) {
+                            // Apply Q secondary style when wake word detected
+                            micBtn.classList.replace('bg-brand-primary', 'bg-brand-secondary');
+                            micBtn.classList.replace('hover:bg-brand-primaryHover', 'hover:bg-brand-secondaryHover');
+                            micBtn.classList.add('mic-ripple');
+                            micBtn.style.transform = "scale(1.1)";
+                        }
+                        const transcriptBox = document.getElementById('transcript-box');
+                        const transcriptText = document.getElementById('transcript-text');
+                        if (transcriptBox && transcriptText) {
+                            transcriptText.textContent = "جاري الاستماع...";
+                            transcriptBox.classList.remove('opacity-0', 'pointer-events-none');
+                        }
+                        return;
+                    }
+                    if (data.action === "AGENT_RESPONSE_COMPLETE") {
+                        const micBtn = document.getElementById('mic-btn');
+                        if (micBtn) {
+                            micBtn.classList.replace('bg-brand-secondary', 'bg-brand-primary');
+                            micBtn.classList.replace('hover:bg-brand-secondaryHover', 'hover:bg-brand-primaryHover');
+                            micBtn.classList.remove('mic-ripple');
+                            micBtn.style.transform = "";
+                        }
+                        const transcriptBox = document.getElementById('transcript-box');
+                        if (transcriptBox) {
+                            transcriptBox.classList.add('opacity-0', 'pointer-events-none');
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    console.error("Error parsing WebSocket JSON:", e);
+                }
+                return; 
+            }
+
+            if (event.data instanceof Blob) {
+                if (isRendering) return;
+                isRendering = true;
+                try {
+                    const bitmap = await createImageBitmap(event.data);
+                    requestAnimationFrame(() => {
+                        if (canvas.width !== bitmap.width || canvas.height !== bitmap.height) {
+                            canvas.width = bitmap.width;
+                            canvas.height = bitmap.height;
+                        }
+                        ctx.drawImage(bitmap, 0, 0);
+                        bitmap.close(); 
+                        isRendering = false; 
+                        ws.send("ready");
+                    });
+                } catch (err) {
+                    console.error("Frame skipped: ", err);
+                    isRendering = false; 
+                    ws.send("ready"); 
+                }
+            }
+        };
+
+        const collectingAnimations = new Set();
+        
+        function updateListCount() {
+            const countEl = document.getElementById('list-count');
+            const cards = document.querySelectorAll('.cart-item-card:not(.hidden)');
+            if(countEl) countEl.innerText = `${cards.length} عناصر`;
+        }
+
+        function renderStateDrivenCards(currentList) {
+            const activePartition = document.getElementById("active-queue-partition");
+            const inactivePartition = document.getElementById("inactive-list-partition");
+            const separator = document.getElementById("list-separator");
+        
+            const currentIds = new Set(currentList.map((i) => i.name));
+            const seenIds = new Set();
+            document.querySelectorAll(".cart-item-card").forEach((card) => {
+                const id = card.dataset.id;
+                if (seenIds.has(id)) {
+                    card.remove();
+                } else {
+                    seenIds.add(id);
+                }
+            });
+        
+            let visibleActiveCount = 0;
+            let visibleInactiveCount = 0;
+        
+            document.querySelectorAll(".cart-item-card").forEach((card) => {
+                const id = card.dataset.id;
+                const item = currentList.find((i) => i.name === id);
+        
+                if (collectingAnimations.has(id)) return;
+                if (!item) {
+                    card.remove();
+                    return;
+                }
+        
+                const isQueued = item.status === "queued";
+                const targetParent = isQueued ? activePartition : inactivePartition;
+        
+                if (card.parentElement !== targetParent) {
+                    targetParent.appendChild(card);
+                }
+        
+                const priceP = card.querySelector("p");
+                if (priceP) {
+                    priceP.innerHTML = `${item.price || "--"} <span class="text-[10px] text-brand-textMuted font-bold">ريال</span>`;
+                }
+        
+                const btnGo = card.querySelector('.action-btn');
+                const btnDel = card.querySelector('button[onclick^="deleteItem"]');
+
+                if (btnGo && btnDel) {
+                    if (isQueued) {
+                        btnGo.className = `action-btn flex-[2] bg-brand-primary text-white py-1.5 rounded-lg text-xs font-bold shadow-sm pointer-events-none cursor-default opacity-80`;
+                        btnGo.innerHTML = `<i class="ph-bold ph-spinner animate-spin"></i> جاري التوجه`;
+                        btnGo.removeAttribute("onclick");
+                    } else {
+                        btnGo.className = `action-btn flex-[2] bg-brand-primary hover:bg-brand-primaryHover text-white py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm`;
+                        btnGo.innerText = `توجه إليه`;
+                        btnGo.setAttribute("onclick", `MapsTo('${item.name}')`);
+                    }
+
+                    const delText = isQueued ? "إلغاء التوجيه" : "حذف";
+                    btnDel.innerText = delText;
+                    btnDel.setAttribute("onclick", `deleteItem(this, '${item.name}')`);
+                }
+        
+                if (isQueued) visibleActiveCount++;
+                else visibleInactiveCount++;
+            });
+        
+            currentList.forEach((item) => {
+                if (document.querySelector(`.cart-item-card[data-id="${CSS.escape(item.name)}"]`)) return;
+        
+                const isQueued = item.status === "queued";
+                const deleteText = isQueued ? "إلغاء التوجيه" : "حذف";
+        
+                const goBtnHTML = isQueued
+                    ? `<button class="action-btn flex-[2] bg-brand-primary text-white py-1.5 rounded-lg text-xs font-bold shadow-sm pointer-events-none cursor-default opacity-80 flex justify-center items-center gap-1"><i class="ph-bold ph-spinner animate-spin"></i> جاري التوجه</button>`
+                    : `<button onclick="navigateTo('${item.name}')" class="action-btn flex-[2] bg-brand-primary hover:bg-brand-primaryHover text-white py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm">توجه إليه</button>`;
+
+                // simple emoji selector based on keywords (matching Q style)
+                let emoji = "📦";
+                if(item.name.includes('خبز')) emoji = "🥖";
+                if(item.name.includes('شبس')) emoji = "🥔";
+                if(item.name.includes('حليب')) emoji = "🥛";
+                if(item.name.includes('تفاح')) emoji = "🍎";
+                if(item.name.includes('مياه')) emoji = "💧";
+                if(item.name.includes('جبن')) emoji = "🧀";
+
+                // Updated dynamic card UI based on Q style
+                const cardHTML = `
+                    <div class="cart-item-card bg-brand-card rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col gap-2 relative transition-transform duration-300 hover:shadow-md" data-id="${item.name}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-lg bg-brand-panel flex items-center justify-center border border-gray-200 overflow-hidden shrink-0 text-2xl">
+                                ${emoji}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-sm leading-tight truncate text-brand-textMain">${item.name}</h3>
+                                <p class="font-black text-brand-primary text-sm mt-0.5">${item.price || "--"} <span class="text-[10px] text-brand-textMuted font-bold">ريال</span></p>
+                            </div>
+                        </div>
+                        <div class="flex w-full gap-2 mt-1">
+                            ${goBtnHTML}
+                            <button onclick="deleteItem(this, '${item.name}')" class="flex-1 bg-white text-brand-secondary border border-brand-secondary hover:bg-brand-secondary hover:text-white py-1.5 rounded-lg text-xs font-bold transition-colors active:scale-95">${deleteText}</button>
+                        </div>
+                    </div>
+                `;
+        
+                if (isQueued) {
+                    activePartition.insertAdjacentHTML("beforeend", cardHTML);
+                    visibleActiveCount++;
+                } else {
+                    inactivePartition.insertAdjacentHTML("beforeend", cardHTML);
+                    visibleInactiveCount++;
+                }
+            });
+        
+            if (separator) {
+                if (visibleActiveCount > 0 && visibleInactiveCount > 0) {
+                    separator.classList.remove("hidden");
+                    separator.classList.add("block");
+                } else {
+                    separator.classList.add("hidden");
+                    separator.classList.remove("block");
+                }
+            }
+        
+            const btnGoAll = document.getElementById("btn-go-all");
+            const textGoAll = document.getElementById("text-go-all");
+            const iconGoAll = document.getElementById("icon-go-all");
+        
+            if (btnGoAll) {
+                if (visibleActiveCount > 0 && visibleInactiveCount === 0) {
+                    btnGoAll.setAttribute("onclick", "cancelGlobalRoute()");
+                    btnGoAll.className = "w-full bg-brand-secondary hover:bg-brand-secondaryHover text-white py-2.5 rounded-lg font-bold text-sm shadow-sm transition-transform active:scale-95 mb-4 flex items-center justify-center gap-2";
+                    if (textGoAll) textGoAll.innerText = "إيقاف العربة";
+                    if (iconGoAll) iconGoAll.className = "ph-bold ph-stop-circle pointer-events-none text-lg";
+                } else {
+                    btnGoAll.setAttribute("onclick", "navigateToAll('all')");
+                    btnGoAll.className = "w-full bg-brand-primary hover:bg-brand-primaryHover text-white py-2.5 rounded-lg font-bold text-sm shadow-sm transition-transform active:scale-95 mb-4 flex items-center justify-center gap-2";
+                    if (textGoAll) textGoAll.innerText = "جمع الكل تلقائياً";
+                    if (iconGoAll) iconGoAll.className = "ph-bold ph-path pointer-events-none text-lg";
+                }
+            }
+            
+            updateCenterCancelButton(visibleActiveCount);
+            updateListCount();
+        }
+        
+        async function cancelGlobalRoute() {
+            try {
+                await fetch('http://127.0.0.1:8000/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "CANCEL_ROUTE" })
+                });
+            } catch (error) {
+                console.error("Failed to clear navigation path states globally:", error);
+            }
+        }
+
+        function updateCenterCancelButton(activeCount) {
+            const btn = document.getElementById('btn-cancel-route-center');
+            if (!btn) return;
+        
+            if (activeCount > 0) {
+                btn.classList.remove('hidden');
+                btn.classList.add('flex');
+            } else {
+                btn.classList.add('hidden');
+                btn.classList.remove('flex');
+            }
+        }
+        
+        function drawShoppingCards(items) {
+            const container = document.getElementById("inactive-list-partition");
+            items.forEach(item => {
+                if (document.querySelector(`.cart-item-card[data-id="${CSS.escape(item.name)}"]`)) {
+                    return;
+                }
+                const cardHTML = `
+                    <div class="cart-item-card bg-brand-card rounded-xl p-3 shadow-sm border border-gray-100 flex flex-col gap-2 relative transition-transform duration-300 hover:shadow-md" data-id="${item.name}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-lg bg-brand-panel flex items-center justify-center border border-gray-200 overflow-hidden shrink-0 text-2xl">
+                                📦
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-sm leading-tight truncate text-brand-textMain">${item.name}</h3>
+                                <p class="font-black text-brand-primary text-sm mt-0.5">-- <span class="text-[10px] text-brand-textMuted font-bold">ريال</span></p>
+                            </div>
+                        </div>
+                        <div class="flex w-full gap-2 mt-1">
+                            <button onclick="navigateTo('${item.name}')" class="action-btn flex-[2] bg-brand-primary hover:bg-brand-primaryHover text-white py-1.5 rounded-lg text-xs font-bold transition-all active:scale-95 shadow-sm">توجه إليه</button>
+                            <button onclick="deleteItem(this, '${item.name}')" class="flex-1 bg-white text-brand-secondary border border-brand-secondary hover:bg-brand-secondary hover:text-white py-1.5 rounded-lg text-xs font-bold transition-colors active:scale-95">حذف</button>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+            updateListCount();
+        }
+        
+        let isAllRouteActive = false;
+        let finalShoppingCart = []; 
+
+        function addToFinalCart(id) {
+            const card = document.querySelector(`.cart-item-card[data-id="${id}"]`);
+            if(!card) return;
+
+            const name = card.querySelector('h3').innerText;
+            const priceText = card.querySelector('p').innerText;
+            const price = parseFloat(priceText);
+            const iconDiv = card.querySelector('.w-12.h-12');
+            const emoji = iconDiv ? iconDiv.innerText : '📦';
+
+            finalShoppingCart.push({ id, name, price, emoji });
+
+            const actionBtn = card.querySelector('.action-btn');
+            actionBtn.innerHTML = '<i class="ph-bold ph-check"></i> تمت الإضافة';
+            actionBtn.className = "action-btn flex-[2] bg-brand-panel text-brand-textMuted py-1.5 rounded-lg text-xs font-bold border border-gray-200 cursor-not-allowed shadow-none";
+            actionBtn.removeAttribute('onclick');
+
+            const badge = document.getElementById('cart-badge');
+            badge.innerText = finalShoppingCart.length;
+            badge.classList.remove('hidden');
+
+            updateCartModalUI();
+        }
+
+        function addBreadToCart() {
+            const offerCard = document.getElementById('offer-bread');
+            offerCard.classList.add('opacity-0');
+            setTimeout(() => { offerCard.style.display = 'none'; }, 300);
+
+            const cartItem = document.getElementById('cart-item-bread');
+            cartItem.classList.remove('hidden');
+            cartItem.classList.add('flex');
+            updateListCount();
+
+            if(isAllRouteActive) {
+                setTimeout(() => { drawRoute('all'); }, 100);
+            }
+        }
+
+        function removeBread() {
+            document.getElementById('cart-item-bread').classList.add('hidden');
+            document.getElementById('cart-item-bread').classList.remove('flex');
+            
+            const offerCard = document.getElementById('offer-bread');
+            offerCard.style.display = 'flex';
+            setTimeout(() => { offerCard.classList.remove('opacity-0'); }, 10);
+            updateListCount();
+
+            if(isAllRouteActive) drawRoute('all');
+        }
+
+        function handleSearch(val) {
+            const defaultResults = document.querySelectorAll('.default-search-result');
+            const chipsResult = document.getElementById('result-chips');
+
+            if (val.trim().includes('شبس') || val.trim().includes('شيبس') || val.trim().includes('ليز')) {
+                defaultResults.forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+                chipsResult.classList.remove('hidden');
+                chipsResult.classList.add('flex');
+            } else {
+                defaultResults.forEach(el => { el.classList.remove('hidden'); el.classList.add('flex'); });
+                chipsResult.classList.add('hidden');
+                chipsResult.classList.remove('flex');
+            }
+        }
+
+        function addChipsToCart() {
+            closeSearchModal();
+            setTimeout(() => {
+                document.getElementById('search-input').value = '';
+                handleSearch('');
+            }, 400);
+
+            const cartItem = document.getElementById('cart-item-chips');
+            cartItem.classList.remove('hidden');
+            cartItem.classList.add('flex');
+            updateListCount();
+
+            if(isAllRouteActive) {
+                setTimeout(() => { drawRoute('all'); }, 100);
+            }
+        }
+
+        function removeChips() {
+            document.getElementById('cart-item-chips').classList.add('hidden');
+            document.getElementById('cart-item-chips').classList.remove('flex');
+            updateListCount();
+            
+            if(isAllRouteActive) drawRoute('all');
+        }
+
+        function openVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const pulse = document.getElementById('mic-pulse');
+            const suggestions = document.getElementById('voice-suggestions');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            pulse.classList.add('mic-ripple');
+            setTimeout(() => { suggestions.classList.remove('opacity-0', 'translate-y-8'); }, 150);
+            setTimeout(() => {
+                if(!modal.classList.contains('pointer-events-none')) {
+                    closeVoiceModal();
+                    drawRoute('fries'); 
+                }
+            }, 6000);
+        }
+        
+        function closeVoiceModal() {
+            const modal = document.getElementById('voice-modal');
+            const pulse = document.getElementById('mic-pulse');
+            const suggestions = document.getElementById('voice-suggestions');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            suggestions.classList.add('opacity-0', 'translate-y-8');
+            setTimeout(() => { pulse.classList.remove('mic-ripple'); }, 300);
+        }
+        
+        function openSearchModal() {
+            const modal = document.getElementById('search-modal');
+            const content = document.getElementById('search-modal-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                content.classList.remove('translate-y-8');
+                content.querySelector('input').focus();
+            }, 50);
+        }
+        
+        function closeSearchModal() {
+            const modal = document.getElementById('search-modal');
+            const content = document.getElementById('search-modal-content');
+            content.classList.add('translate-y-8');
+            setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 300);
+        }
+
+        // Updated cart modal template for Q Style
+        function updateCartModalUI() {
+            const container = document.getElementById('final-cart-items-container');
+            const msg = document.getElementById('empty-cart-msg');
+            const totalEl = document.getElementById('final-cart-total');
+            const countEl = document.getElementById('final-cart-count');
+
+            countEl.innerText = `${finalShoppingCart.length} منتجات`;
+
+            if(finalShoppingCart.length === 0) {
+                container.innerHTML = '';
+                container.appendChild(msg);
+                msg.style.display = 'flex';
+                totalEl.innerHTML = `0.00 <span class="text-sm text-brand-textMuted">ريال</span>`;
+                return;
+            }
+
+            msg.style.display = 'none';
+            container.innerHTML = '';
+            let total = 0;
+
+            finalShoppingCart.forEach(item => {
+                total += item.price;
+                const emojiToUse = item.emoji || '📦';
+                const itemHTML = `
+                    <div class="flex items-center justify-between bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-brand-panel rounded-lg flex items-center justify-center text-2xl border border-gray-50">${emojiToUse}</div>
+                            <span class="font-bold text-sm text-brand-textMain">${item.name}</span>
+                        </div>
+                        <span class="font-black text-brand-primary text-lg">${item.price.toFixed(2)} <span class="text-xs text-brand-textMuted font-bold">ريال</span></span>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+
+            totalEl.innerHTML = `${total.toFixed(2)} <span class="text-sm text-brand-textMuted font-bold">ريال</span>`;
+        }
+
+        function openFinalCartModal() {
+            updateCartModalUI();
+            const modal = document.getElementById('final-cart-modal');
+            const content = document.getElementById('final-cart-content');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                content.classList.remove('translate-y-8');
+            }, 50);
+        }
+
+        function closeFinalCartModal() {
+            const modal = document.getElementById('final-cart-modal');
+            const content = document.getElementById('final-cart-content');
+            content.classList.add('translate-y-8');
+            setTimeout(() => { modal.classList.add('opacity-0', 'pointer-events-none'); }, 300);
+        }
+
+        // --- Auth Logic ---
+        const otpInputs = document.querySelectorAll('.otp-input');
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+                if (e.key === 'Enter' && index === otpInputs.length - 1) {
+                    verifyOTP();
+                }
+            });
+        });
+
+        function sendOTP() {
+            const phone = document.getElementById('phone-input').value;
+            if (phone.length < 9) {
+                alert('الرجاء إدخال رقم جوال صحيح يتكون من 9 أرقام');
+                return;
+            }
+            
+            document.getElementById('display-phone-number').innerText = '+966 ' + phone;
+            const stepPhone = document.getElementById('login-step-phone');
+            const stepOtp = document.getElementById('login-step-otp');
+            
+            stepPhone.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                stepPhone.classList.add('hidden');
+                stepOtp.classList.remove('hidden');
+                setTimeout(() => {
+                    stepOtp.classList.remove('opacity-0');
+                    document.querySelectorAll('.otp-input')[0].focus();
+                }, 50);
+            }, 300);
+        }
+
+        function backToPhone() {
+            const stepPhone = document.getElementById('login-step-phone');
+            const stepOtp = document.getElementById('login-step-otp');
+            
+            stepOtp.classList.add('opacity-0');
+            setTimeout(() => {
+                stepOtp.classList.add('hidden');
+                stepPhone.classList.remove('hidden', 'pointer-events-none');
+                setTimeout(() => {
+                    stepPhone.classList.remove('opacity-0');
+                    document.getElementById('phone-input').focus();
+                }, 50);
+            }, 300);
+        }
+
+        function verifyOTP() {
+            let otp = '';
+            document.querySelectorAll('.otp-input').forEach(input => otp += input.value);
+            
+            if (otp === '0000') {
+                document.getElementById('otp-error').classList.add('hidden');
+                document.getElementById('user-name-display').innerText = 'عميل عربـتِك';
+                hideLoginOverlay();
+            } else {
+                document.getElementById('otp-error').classList.remove('hidden');
+                const container = document.getElementById('otp-inputs-container');
+                container.classList.add('translate-x-2');
+                setTimeout(() => container.classList.replace('translate-x-2', '-translate-x-2'), 100);
+                setTimeout(() => container.classList.replace('-translate-x-2', 'translate-x-0'), 200);
+            }
+        }
+
+        function continueAsGuest() {
+            hideLoginOverlay();
+        }
+
+        function hideLoginOverlay() {
+            const overlay = document.getElementById('login-overlay');
+            overlay.classList.add('opacity-0');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 500); 
+        }
+
+        // --- Mic and Wav Encoding (Python Server functionality kept intact) ---
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        async function encodeWAV(blob) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+            const arrayBuffer = await blob.arrayBuffer();
+            const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            const channelData = audioBuffer.getChannelData(0); 
+
+            const buffer = new ArrayBuffer(44 + channelData.length * 2);
+            const view = new DataView(buffer);
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + channelData.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); 
+            view.setUint16(22, 1, true); 
+            view.setUint32(24, 16000, true); 
+            view.setUint32(28, 16000 * 2, true); 
+            view.setUint16(32, 2, true); 
+            view.setUint16(34, 16, true); 
+            writeString(view, 36, 'data');
+            view.setUint32(40, channelData.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < channelData.length; i++) {
+                let s = Math.max(-1, Math.min(1, channelData[i]));
+                view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+                offset += 2;
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        const micBtn = document.getElementById('mic-btn');
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = event => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const rawAudioBlob = new Blob(audioChunks);
+                    audioChunks = []; 
+                    
+                    const wavBlob = await encodeWAV(rawAudioBlob);
+                
+                    const formData = new FormData();
+                    formData.append("file", wavBlob, "web_recording.wav");
+                
+                    const transcriptBox = document.getElementById('transcript-box');
+                    const transcriptText = document.getElementById('transcript-text');
+                
+                    try {
+                        const response = await fetch('http://127.0.0.1:8000/transcribe', {
+                            method: 'POST',
+                            body: formData
+                        });
+                
+                        if (!response.ok) throw new Error("Network response was not ok");
+                
+                        const data = await response.json();
+                    } catch (error) {
+                        console.error("Network Error:", error);
+                        if (transcriptText && transcriptBox) {
+                            transcriptText.textContent = "حدث خطأ في الاتصال";
+                            transcriptBox.classList.remove('opacity-0', 'pointer-events-none');
+                            setTimeout(() => {
+                                transcriptBox.classList.add('opacity-0', 'pointer-events-none');
+                            }, 3000);
+                        }
+                    }
+                };
+            })
+
+            micBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (!mediaRecorder) return;
+            
+                const transcriptBox = document.getElementById('transcript-box');
+                const transcriptText = document.getElementById('transcript-text');
+            
+                if (!isRecording) {
+                    mediaRecorder.start();
+                    isRecording = true;
+                    // Q Styling for Active Microphone
+                    micBtn.classList.replace('bg-brand-primary', 'bg-brand-secondary');
+                    micBtn.classList.replace('hover:bg-brand-primaryHover', 'hover:bg-brand-secondaryHover');
+                    micBtn.style.transform = "scale(1.05)";
+                    micBtn.classList.add('mic-ripple');
+                    
+                    if (transcriptBox && transcriptText) {
+                        transcriptBox.classList.add('opacity-0', 'pointer-events-none');
+                        transcriptText.textContent = "";
+                    }
+                } else {
+                    mediaRecorder.stop();
+                    isRecording = false;
+                    // Q Styling for Inactive Microphone
+                    micBtn.classList.replace('bg-brand-secondary', 'bg-brand-primary');
+                    micBtn.classList.replace('hover:bg-brand-secondaryHover', 'hover:bg-brand-primaryHover');
+                    micBtn.style.transform = "scale(1)";
+                    micBtn.classList.remove('mic-ripple');
+            
+                    if (transcriptBox && transcriptText) {
+                        transcriptText.textContent = "جاري المعالجة...";
+                        transcriptBox.classList.remove('opacity-0', 'pointer-events-none');
+                    }
+                }
+            });
+
+        async function navigateToAll(type) {
+            if (type === 'all') {
+                try {
+                    const response = await fetch('http://127.0.0.1:8000/command', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: "NAVIGATE_TO_ALL" })
+                    });
+                } catch (error) {
+                    console.error("Network Error:", error);
+                }
+            }
+        }
+
+        async function navigateTo(itemName) {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/navigate_item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item_name: itemName })
+                });
+            } catch (error) {
+                console.error("Network Error:", error);
+            }
+        }
+
+        async function deleteItem(buttonElement, itemName) {
+            try {
+                await fetch('http://127.0.0.1:8000/remove_item', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item_name: itemName })
+                });
+            } catch (error) {
+                console.error("Failed to delete item:", error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/sync_state');
+                const data = await response.json();
+                if (data && data.current_list) {
+                    renderStateDrivenCards(data.current_list);
+                }
+            } catch (error) {
+                console.error("Initial state sync failed:", error);
+            }
+        });
+
+    </script>
+</body>
+</html>
